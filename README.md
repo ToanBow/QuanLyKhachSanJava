@@ -33,8 +33,6 @@ Báo cáo thông minh: Thống kê doanh thu thuần, tỷ lệ lấp đầy ph�
 
 🏗️ Kiến trúc tổng quan
 Dự án được xây dựng theo kiến trúc phân lớp (Layered Architecture) nhằm tách biệt rõ ràng giữa logic xử lý dữ liệu và logic nghiệp vụ.
-
-Đoạn mã
 graph TD
     UI[Giao diện người dùng] --> Service[Service Layer - Nghiệp vụ]
     Service --> DAO[DAO Layer - Truy xuất dữ liệu]
@@ -42,19 +40,14 @@ graph TD
     Service --> Model[Models - Đối tượng thực thể]
     DAO --> Model
 Model Layer: Chứa các POJO (Plain Old Java Objects) như User, Room, Guest, Invoice đại diện cho các thực thể trong hệ thống.
-
 DAO Layer (Data Access Object): Các Interface định nghĩa phương thức tương tác với CSDL.
-
 Service Layer: Chứa Business Logic, xử lý các ràng buộc nghiệp vụ phức tạp trước khi gọi DAO.
-
 Util Layer: Chứa cấu hình kết nối cơ sở dữ liệu JDBC.
 
 🛠️ Cài đặt
 Yêu cầu hệ thống
 Java Development Kit (JDK): Phiên bản 17 trở lên.
-
 Database: MySQL Server 8.0+.
-
 IDE: IntelliJ IDEA, Eclipse hoặc NetBeans.
 
 Các bước thiết lập
@@ -100,26 +93,16 @@ com.hotel
 └── lib          # Thư viện ngoài (MySQL Connector)
 🤝 Hướng dẫn đóng góp
 Chúng tôi luôn hoan nghênh các đóng góp để hoàn thiện hệ thống:
-
 Fork dự án.
-
 Tạo nhánh tính năng mới (git checkout -b feature/AmazingFeature).
-
 Commit các thay đổi (git commit -m 'Add some AmazingFeature').
-
 Push lên nhánh (git push origin feature/AmazingFeature).
-
 Mở một Pull Request.
-
 🛣️ Roadmap
 [ ] Xây dựng giao diện người dùng (GUI) bằng Java Swing/JavaFX.
-
 [ ] Tích hợp thanh toán qua QR Code động.
-
 [ ] Phát triển API REST để kết nối với ứng dụng di động.
-
 [ ] Hệ thống dự báo tỷ lệ lấp đầy phòng dựa trên AI.
-
 📄 Giấy phép
 Phân phối dưới Giấy phép MIT. Xem LICENSE để biết thêm thông tin.
 
