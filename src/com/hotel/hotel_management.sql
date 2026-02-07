@@ -1,10 +1,11 @@
-CREATE DATABASE hotel_management;
+DROP DATABASE IF EXISTS hotel_management;
+CREATE DATABASE hotel_management CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE hotel_management;
 
--- 1. Bảng Người dùng (Phân quyền RBAC)
+-- 1. Bảng Người dùng
 CREATE TABLE users (
     email VARCHAR(100) PRIMARY KEY,
-    password VARCHAR(255) NOT NULL, -- Mật khẩu nên được mã hóa
+    password VARCHAR(255) NOT NULL,
     role ENUM('Quản lý', 'Lễ tân', 'Kế toán', 'Buồng phòng') NOT NULL
 );
 
@@ -19,7 +20,7 @@ CREATE TABLE rooms (
     status ENUM('Sẵn sàng', 'Có khách', 'Chưa dọn', 'Đang sửa chữa') DEFAULT 'Sẵn sàng'
 );
 
--- 3. Bảng Khách hàng (CRM)
+-- 3. Bảng Khách hàng
 CREATE TABLE guests (
     cccd VARCHAR(20) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -29,7 +30,7 @@ CREATE TABLE guests (
     home_town VARCHAR(255),
     email VARCHAR(100),
     nationality VARCHAR(50),
-    rank ENUM('Bạc', 'Vàng', 'Kim cương') DEFAULT 'Bạc'
+    `rank` ENUM('Bạc', 'Vàng', 'Kim cương') DEFAULT 'Bạc' -- Thêm dấu ` cho rank
 );
 
 -- 4. Bảng Dịch vụ
@@ -43,7 +44,7 @@ CREATE TABLE services (
     vat_rate DOUBLE DEFAULT 0.1
 );
 
--- 5. Bảng Hóa đơn
+-- 5. Bảng Hóa đơn (Chạy trước bảng service_usage)
 CREATE TABLE invoices (
     invoice_id VARCHAR(20) PRIMARY KEY,
     room_id VARCHAR(10),
@@ -61,7 +62,7 @@ CREATE TABLE invoices (
     FOREIGN KEY (guest_cccd) REFERENCES guests(cccd)
 );
 
--- 6. Bảng Chi tiết sử dụng dịch vụ (Quan hệ n-n giữa Invoice và Service)
+-- 6. Bảng Chi tiết sử dụng dịch vụ (Chạy cuối cùng)
 CREATE TABLE service_usage (
     usage_id INT AUTO_INCREMENT PRIMARY KEY,
     invoice_id VARCHAR(20),
