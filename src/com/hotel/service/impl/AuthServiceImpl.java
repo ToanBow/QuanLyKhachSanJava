@@ -58,7 +58,14 @@ public class AuthServiceImpl implements IAuthService {
         // TODO: Thiết lập quyền cho Quản lý, Lễ tân, Kế toán, Buồng phòng [cite: 34]
         User user = userDAO.findByEmail(email);
         if (user != null) {
-            System.out.println("Da cap nhat quyen "+role+" cho nguoi dung "+email);
+            user.setRole(role);
+            if (userDAO.update(user)) {
+                System.out.println("Thành công: Đã cập nhật quyền '" + role + "' cho " + email);
+            } else {
+                System.out.println("Lỗi: Không thể cập nhật quyền vào CSDL.");
+            }
+        } else {
+            System.out.println("Lỗi: Không tìm thấy người dùng có email " + email);
         }
     }
 }
