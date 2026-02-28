@@ -20,4 +20,122 @@ public class Invoice {
     public Invoice() {}
     
     // Logic tính toán: Total = (RoomPrice + Surcharges + Services) * (1 - Discount)
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public String getGuestCccd() {
+        return guestCccd;
+    }
+
+    public Date getCheckInTime() {
+        return checkInTime;
+    }
+
+    public Date getCheckOutTime() {
+        return checkOutTime;
+    }
+
+    public String getRentalType() {
+        return rentalType;
+    }
+
+    public double getDeposit() {
+        return deposit;
+    }
+
+    public double getEarlySurcharge() {
+        return earlySurcharge;
+    }
+
+    public double getLateSurcharge() {
+        return lateSurcharge;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public List<ServiceUsage> getServices() {
+        return services;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    public void setGuestCccd(String guestCccd) {
+        this.guestCccd = guestCccd;
+    }
+
+    public void setCheckInTime(Date checkInTime) {
+        this.checkInTime = checkInTime;
+    }
+
+    public void setCheckOutTime(Date checkOutTime) {
+        this.checkOutTime = checkOutTime;
+    }
+
+    public void setRentalType(String rentalType) {
+        this.rentalType = rentalType;
+    }
+
+    public void setDeposit(double deposit) {
+        this.deposit = deposit;
+    }
+
+    public void setEarlySurcharge(double earlySurcharge) {
+        this.earlySurcharge = earlySurcharge;
+    }
+
+    public void setLateSurcharge(double lateSurcharge) {
+        this.lateSurcharge = lateSurcharge;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public void setServices(List<ServiceUsage> services) {
+        this.services = services;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+    //tinh tien thuc te
+    public void calculateActualAmount(double roomPrice){
+        double serviceTotal = 0;
+        if(services != null){
+            for (ServiceUsage su : services) {
+                serviceTotal += su.getSubTotal();
+            }
+        }
+        double subTotal = roomPrice + earlySurcharge + lateSurcharge + serviceTotal;
+        //ap dung giam gia va tru tien dat coc
+        double discountMoney = subTotal * (discount/100);
+        this.totalAmount = (subTotal - discountMoney) - deposit;
+        System.out.println("Đã hoàn tất hóa đơn "+ this.totalAmount);
+    }
 }
