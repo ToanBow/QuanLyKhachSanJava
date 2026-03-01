@@ -16,4 +16,6 @@ public interface IInvoiceDAO {
 
     // Thống kê doanh thu theo ca làm việc của nhân viên [cite: 32]
     double getRevenueByShift(String employeeId, Date shiftTime);
+
+    Invoice findById(String invoiceId);
 }

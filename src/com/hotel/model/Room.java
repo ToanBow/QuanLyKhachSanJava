@@ -10,6 +10,36 @@ public class Room {
 
     public Room() {}
 
+    public void setRoomId(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setRoomId'");
+    }
+
+    public void setFloor(int int1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setFloor'");
+    }
+
+    public void setType(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setType'");
+    }
+
+    public void setBeds(int int1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setBeds'");
+    }
+
+    public void setDailyPrice(double double1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDailyPrice'");
+    }
+
+    public void setStatus(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
+    }
+
     // Getters và Setters 
     // (Lưu ý: Status dùng để render màu sắc trên giao diện sơ đồ phòng [cite: 2])
 }
