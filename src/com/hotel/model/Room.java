@@ -39,7 +39,41 @@ public class Room {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
     }
-
     // Getters và Setters 
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getBeds() {
+        return beds;
+    }
+
+    public double getDailyPrice() {
+        return dailyPrice;
+    }
+
+    public double getHourlyPrice() {
+        return hourlyPrice;
+    }
+
+    public void setHourlyPrice(double hourlyPrice) {
+        this.hourlyPrice = hourlyPrice;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    
+    
     // (Lưu ý: Status dùng để render màu sắc trên giao diện sơ đồ phòng [cite: 2])
 }

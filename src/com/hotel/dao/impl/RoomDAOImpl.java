@@ -16,7 +16,7 @@ public class RoomDAOImpl implements IRoomDAO {
     public List<Room> getAllRooms() {
 
         List<Room> rooms = new ArrayList<>();
-        String sql = "SELECT * FROM room";
+        String sql = "SELECT * FROM rooms";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -30,7 +30,7 @@ public class RoomDAOImpl implements IRoomDAO {
                 r.setType(rs.getString("type"));
                 r.setBeds(rs.getInt("beds"));
                 r.setDailyPrice(rs.getDouble("daily_price"));
-                r.setDailyPrice(rs.getDouble("hourly_price"));
+                r.setHourlyPrice(rs.getDouble("hourly_price"));
                 r.setStatus(rs.getString("status"));
 
                 rooms.add(r);
@@ -47,7 +47,7 @@ public class RoomDAOImpl implements IRoomDAO {
     @Override
     public Room findByRoomId(String roomId) {
 
-        String sql = "SELECT * FROM room WHERE room_id=?";
+        String sql = "SELECT * FROM rooms WHERE room_id=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -82,7 +82,7 @@ public class RoomDAOImpl implements IRoomDAO {
     public boolean updateStatus(String roomId, String status) {
 
         String sql =
-                "UPDATE room SET status=? WHERE room_id=?";
+                "UPDATE rooms SET status=? WHERE room_id=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -106,7 +106,7 @@ public class RoomDAOImpl implements IRoomDAO {
                                  double hourlyPrice) {
 
         String sql =
-            "UPDATE room SET daily_price=?, hourly_price=? WHERE type=?";
+            "UPDATE rooms SET daily_price=?, hourly_price=? WHERE type=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

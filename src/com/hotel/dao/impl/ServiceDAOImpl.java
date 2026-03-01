@@ -67,6 +67,6 @@ public class ServiceDAOImpl implements IServiceDAO{
         } catch (SQLException e){ 
             e.printStackTrace(); 
         }
-        return new ArrayList<>(); 
+        return list; 
     }
 }
