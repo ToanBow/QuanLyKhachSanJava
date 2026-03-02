@@ -58,6 +58,9 @@ CREATE TABLE invoices (
     discount DOUBLE DEFAULT 0,
     payment_method ENUM('Tiền mặt', 'Tín dụng', 'Nợ'),
     total_amount DOUBLE,
+    staff_id VARCHAR(100),
+    payment_date DATETIME,
+    FOREIGN KEY (staff_id) REFERENCES users(email),
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (guest_cccd) REFERENCES guests(cccd)
 );
@@ -71,4 +74,10 @@ CREATE TABLE service_usage (
     price_at_time DOUBLE,
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id),
     FOREIGN KEY (service_id) REFERENCES services(service_id)
+);
+--7. Bảng theo doi so tien dai ly du lich con nợ
+CREATE TABLE agency_debts (
+    agency_id VARCHAR(50) PRIMARY KEY,
+    debt_amount DOUBLE DEFAULT 0,
+    record_date DATETIME
 );
