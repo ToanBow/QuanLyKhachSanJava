@@ -64,7 +64,7 @@ public class RoomDAOImpl implements IRoomDAO {
                 r.setType(rs.getString("type"));
                 r.setBeds(rs.getInt("beds"));
                 r.setDailyPrice(rs.getDouble("daily_price"));
-                r.setDailyPrice(rs.getDouble("hourly_price"));
+                r.setHourlyPrice(rs.getDouble("hourly_price"));
                 r.setStatus(rs.getString("status"));
 
                 return r;
