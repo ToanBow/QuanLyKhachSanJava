@@ -60,6 +60,11 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
     @Override public List<Invoice> getInvoicesByPeriod(Date start, Date end) { 
         return null; 
     }
+    @Override
+    public Invoice findById(String invoiceId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    }
 
 } /*
 

@@ -1,13 +1,13 @@
 package com.hotel.model;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Invoice {
     private String invoiceId;
     private String roomId;
     private String guestCccd;
-    private Date checkInTime;    // Tự động lấy từ máy [cite: 4]
-    private Date checkOutTime;
+    private LocalDateTime checkInTime;    // Tự động lấy từ máy [cite: 4]
+    private LocalDateTime checkOutTime;
     private String rentalType;   // Theo ngày/Theo giờ [cite: 4]
     private double deposit;      // Tiền trả trước [cite: 4]
     private double earlySurcharge; // Phụ thu check-in sớm [cite: 10]
@@ -33,11 +33,11 @@ public class Invoice {
         return guestCccd;
     }
 
-    public Date getCheckInTime() {
+    public LocalDateTime getCheckInTime() {
         return checkInTime;
     }
 
-    public Date getCheckOutTime() {
+    public LocalDateTime getCheckOutTime() {
         return checkOutTime;
     }
 
@@ -85,11 +85,11 @@ public class Invoice {
         this.guestCccd = guestCccd;
     }
 
-    public void setCheckInTime(Date checkInTime) {
+    public void setCheckInTime(LocalDateTime checkInTime) {
         this.checkInTime = checkInTime;
     }
 
-    public void setCheckOutTime(Date checkOutTime) {
+    public void setCheckOutTime(LocalDateTime checkOutTime) {
         this.checkOutTime = checkOutTime;
     }
 
@@ -137,5 +137,15 @@ public class Invoice {
         double discountMoney = subTotal * (discount/100);
         this.totalAmount = (subTotal - discountMoney) - deposit;
         System.out.println("Đã hoàn tất hóa đơn "+ this.totalAmount);
+    }
+
+    public void setStatus(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
+    }
+
+    public String getStatus() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getStatus'");
     }
 }
