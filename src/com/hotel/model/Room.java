@@ -10,34 +10,28 @@ public class Room {
 
     public Room() {}
 
-    public void setRoomId(String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRoomId'");
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 
-    public void setFloor(int int1) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFloor'");
+    public void setFloor(int floor) {
+        this.floor = floor;
     }
 
-    public void setType(String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setType'");
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public void setBeds(int int1) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBeds'");
+    public void setBeds(int beds) {
+        this.beds = beds;
     }
 
-    public void setDailyPrice(double double1) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDailyPrice'");
+    public void setDailyPrice(double dailyPrice) {
+        this.dailyPrice = dailyPrice;
     }
 
-    public void setStatus(String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
+    public void setStatus(String status) {
+        this.status = status;
     }
     // Getters và Setters 
 

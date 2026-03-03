@@ -30,7 +30,7 @@ CREATE TABLE guests (
     home_town VARCHAR(255),
     email VARCHAR(100),
     nationality VARCHAR(50),
-    `rank` ENUM('Bạc', 'Vàng', 'Kim cương') DEFAULT 'Bạc' -- Thêm dấu ` cho rank
+    `rank` ENUM('Bạc', 'Vàng', 'Kim cương') DEFAULT 'Bạc'
 );
 
 -- 4. Bảng Dịch vụ
@@ -44,7 +44,7 @@ CREATE TABLE services (
     vat_rate DOUBLE DEFAULT 0.1
 );
 
--- 5. Bảng Hóa đơn (Chạy trước bảng service_usage)
+-- 5. Bảng Hóa đơn
 CREATE TABLE invoices (
     invoice_id VARCHAR(20) PRIMARY KEY,
     room_id VARCHAR(10),
@@ -58,14 +58,14 @@ CREATE TABLE invoices (
     discount DOUBLE DEFAULT 0,
     payment_method ENUM('Tiền mặt', 'Tín dụng', 'Nợ'),
     total_amount DOUBLE,
-    staff_id VARCHAR(100),
-    payment_date DATETIME,
+    staff_id VARCHAR(100), -- Đã khôi phục để phục vụ báo cáo ca
+    payment_date DATETIME, -- Đã khôi phục để phục vụ thống kê doanh thu
     FOREIGN KEY (staff_id) REFERENCES users(email),
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (guest_cccd) REFERENCES guests(cccd)
 );
 
--- 6. Bảng Chi tiết sử dụng dịch vụ (Chạy cuối cùng)
+-- 6. Bảng Chi tiết sử dụng dịch vụ
 CREATE TABLE service_usage (
     usage_id INT AUTO_INCREMENT PRIMARY KEY,
     invoice_id VARCHAR(20),
@@ -75,7 +75,14 @@ CREATE TABLE service_usage (
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id),
     FOREIGN KEY (service_id) REFERENCES services(service_id)
 );
---7. Bảng theo doi so tien dai ly du lich con nợ
+
+-- 7. Bảng Cấu hình hệ thống (Mới)
+CREATE TABLE system_settings (
+    setting_key VARCHAR(100) PRIMARY KEY, 
+    setting_value TEXT NOT NULL            
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 8. Bảng Theo dõi công nợ đại lý
 CREATE TABLE agency_debts (
     agency_id VARCHAR(50) PRIMARY KEY,
     debt_amount DOUBLE DEFAULT 0,

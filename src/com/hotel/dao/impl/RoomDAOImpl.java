@@ -1,6 +1,5 @@
 package com.hotel.dao.impl;
 
-
 import com.hotel.dao.IRoomDAO;
 import com.hotel.model.Room;
 import com.hotel.util.DBConnection;
@@ -13,18 +12,29 @@ public class RoomDAOImpl implements IRoomDAO {
 
     @Override
     public int countAll() {
+        String sql = "SELECT COUNT(*) FROM rooms";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
         return 0;
     }
 
     @Override
     public int countOccupied() {
+        String sql = "SELECT COUNT(*) FROM rooms WHERE status = 'Có khách'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
         return 0;
     }
 
-    // Lấy danh sách phòng để hiển thị dạng lưới trên sơ đồ [cite: 2]
+    // Lấy danh sách phòng để hiển thị dạng lưới trên sơ đồ
     @Override
     public List<Room> getAllRooms() {
-
         List<Room> rooms = new ArrayList<>();
         String sql = "SELECT * FROM rooms";
 
@@ -33,7 +43,6 @@ public class RoomDAOImpl implements IRoomDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-
                 Room r = new Room();
                 r.setRoomId(rs.getString("room_id"));
                 r.setFloor(rs.getInt("floor"));
@@ -46,17 +55,16 @@ public class RoomDAOImpl implements IRoomDAO {
                 rooms.add(r);
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return rooms;
     }
 
-    // Tìm thông tin chi tiết của một phòng theo số phòng [cite: 5]
+    // Tìm thông tin chi tiết của một phòng theo số phòng
     @Override
     public Room findByRoomId(String roomId) {
-
         String sql = "SELECT * FROM rooms WHERE room_id=?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -64,35 +72,32 @@ public class RoomDAOImpl implements IRoomDAO {
 
             ps.setString(1, roomId);
 
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Room r = new Room();
+                    r.setRoomId(rs.getString("room_id"));
+                    r.setFloor(rs.getInt("floor"));
+                    r.setType(rs.getString("type"));
+                    r.setBeds(rs.getInt("beds"));
+                    r.setDailyPrice(rs.getDouble("daily_price"));
+                    r.setHourlyPrice(rs.getDouble("hourly_price"));
+                    r.setStatus(rs.getString("status"));
 
-            if (rs.next()) {
-                Room r = new Room();
-
-                r.setRoomId(rs.getString("room_id"));
-                r.setFloor(rs.getInt("floor"));
-                r.setType(rs.getString("type"));
-                r.setBeds(rs.getInt("beds"));
-                r.setDailyPrice(rs.getDouble("daily_price"));
-                r.setHourlyPrice(rs.getDouble("hourly_price"));
-                r.setStatus(rs.getString("status"));
-
-                return r;
+                    return r;
+                }
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    // Cập nhật trạng thái (Sẵn sàng, Có khách, Đang dọn, Đang sửa chữa) [cite: 2, 20]
+    // Cập nhật trạng thái (Sẵn sàng, Có khách, Đang dọn, Đang sửa chữa)
     @Override
     public boolean updateStatus(String roomId, String status) {
-
-        String sql =
-                "UPDATE rooms SET status=? WHERE room_id=?";
+        String sql = "UPDATE rooms SET status=? WHERE room_id=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -102,21 +107,17 @@ public class RoomDAOImpl implements IRoomDAO {
 
             return ps.executeUpdate() > 0;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return false;
     }
 
-    // Cấu hình lại giá phòng hoặc thuộc tính phòng [cite: 17, 18]    
+    // Cấu hình lại giá phòng hoặc thuộc tính phòng    
     @Override
-    public boolean updatePricing(String roomTypeId,
-                                 double dailyPrice,
-                                 double hourlyPrice) {
-
-        String sql =
-            "UPDATE rooms SET daily_price=?, hourly_price=? WHERE type=?";
+    public boolean updatePricing(String roomTypeId, double dailyPrice, double hourlyPrice) {
+        String sql = "UPDATE rooms SET daily_price=?, hourly_price=? WHERE type=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -127,7 +128,7 @@ public class RoomDAOImpl implements IRoomDAO {
 
             return ps.executeUpdate() > 0;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

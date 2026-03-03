@@ -12,8 +12,12 @@ public class Guest {
     private String nationality;  // Quốc tịch [cite: 3]
     private String rank;         // Bạc, Vàng, Kim cương [cite: 28]
     private boolean blacklist;
-    public Guest(String guestId, String name, String email, String sdt, String cccd) {}
-
+    public Guest(String guestId, String name, String email, String phone, String cccd) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.cccd = cccd;
+    }
     public Date getBirthDate() {
         return birthDate;
     }

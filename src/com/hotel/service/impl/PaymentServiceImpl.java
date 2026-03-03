@@ -2,6 +2,8 @@ package com.hotel.service.impl;
 
 import com.hotel.model.Invoice;
 import com.hotel.service.IPaymentService;
+import com.hotel.dao.IInvoiceDAO;
+import com.hotel.dao.impl.InvoiceDAOImpl;
 
 import com.hotel.util.DBConnection;
 import java.sql.Connection;
@@ -80,20 +82,16 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     public void generateShiftReport(String employeeId) {
-        // TODO: Báo cáo chi tiết dòng tiền theo ca làm việc của lễ tân [cite: 32]
         try {
-        // goi lop DAO de lay du lieu
-        com.hotel.dao.IInvoiceDAO invoiceDAO = new com.hotel.dao.impl.InvoiceDAOImpl() {
-            @Override
-            public List<Invoice> findAll() {
-                return List.of();
-            }
-        };
-        double total = invoiceDAO.getRevenueByShift(employeeId, new java.util.Date());
-        System.out.println("--- BÁO CÁO DOANH THU CA ---");
-        System.out.println("Nhân viên thực hiện: " + employeeId);
-        System.out.println("Tổng tiền thu được: " + total);
-        System.out.println("----------------------------");
+            // Thay thế class ẩn bằng việc khởi tạo đối tượng DAO thực sự
+            IInvoiceDAO invoiceDAO = new InvoiceDAOImpl();
+            
+            double total = invoiceDAO.getRevenueByShift(employeeId, new java.util.Date());
+            
+            System.out.println("--- BÁO CÁO DOANH THU CA ---");
+            System.out.println("Nhân viên thực hiện: " + employeeId);
+            System.out.println("Tổng tiền thu được: " + String.format("%,.0f VNĐ", total));
+            System.out.println("----------------------------");
         } catch (Exception e) {
             e.printStackTrace(); 
         }

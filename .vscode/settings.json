@@ -3,6 +3,7 @@
     "python-envs.pythonProjects": [],
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "src/com/hotel/lib/mysql-connector-j-9.6.0.jar"
+        "src/com/hotel/lib/mysql-connector-j-9.6.0.jar",
+        "src/com/hotel/lib/jakarta.mail-2.0.1.jar"
     ]
 }

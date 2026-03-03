@@ -2,9 +2,13 @@ package com.hotel.service.impl;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import com.hotel.service.ISettingService;
+import com.hotel.util.DBConnection;
 
 public class SettingServiceImpl implements ISettingService {
     @Override
@@ -50,11 +54,15 @@ public class SettingServiceImpl implements ISettingService {
     }
 
     private void saveSetting(String key, String value) {
-        Properties prop = new Properties();
-        try (FileOutputStream out = new FileOutputStream("config.properties", true)) {
-            prop.setProperty(key, value);
-        } catch (IOException e) {
-            System.err.println("Loi luu cau hinh: " + e.getMessage());
-        }
+    String sql = "INSERT INTO system_settings (setting_key, setting_value) VALUES (?, ?) " +
+                 "ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, key);
+        ps.setString(2, value);
+        ps.executeUpdate();
+    } catch (SQLException e) {
+        System.err.println("Lỗi lưu cấu hình vào DB: " + e.getMessage());
     }
+}
 }

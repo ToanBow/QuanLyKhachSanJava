@@ -15,7 +15,8 @@ public class Invoice {
     private double discount;     // Giảm giá % [cite: 11]
     private List<ServiceUsage> services; // Danh sách dịch vụ đã dùng [cite: 8]
     private String paymentMethod; // Tiền mặt, tín dụng, nợ [cite: 11]
-    private double totalAmount;  // Tổng tiền sau thuế và giảm giá [cite: 7]
+    private double totalAmount; // Tổng tiền sau thuế và giảm giá [cite: 7]
+    private String status; //trạng thái hóa đơn
 
     public Invoice() {}
     
@@ -139,14 +140,12 @@ public class Invoice {
         System.out.println("Đã hoàn tất hóa đơn "+ this.totalAmount);
     }
 
-    public void setStatus(String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getStatus() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getStatus'");
+        return this.status;
     }
 
 
