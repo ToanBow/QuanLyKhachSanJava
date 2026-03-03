@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Date;
 
 public interface IInvoiceDAO {
+    List<Invoice> findAll();
     // Lưu hóa đơn mới sau khi khách hàng thanh toán hoặc Check-out [cite: 7, 12]
     boolean insert(Invoice invoice);
 

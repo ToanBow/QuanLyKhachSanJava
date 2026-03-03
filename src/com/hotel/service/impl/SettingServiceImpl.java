@@ -14,7 +14,7 @@ public class SettingServiceImpl implements ISettingService {
         System.out.println("Ten khach san " + name);
         System.out.println("Dia chi khach san " + address);
         System.out.println("Ma so thue " + taxCode);
-        
+
         saveSetting("hotel.name", name);
         saveSetting("hotel.address", address);
         saveSetting("hotel.taxcode", taxCode);
@@ -27,7 +27,7 @@ public class SettingServiceImpl implements ISettingService {
         System.out.println("Gio Check-in quy chuan " + checkInTime);
         System.out.println("Gio Check-out quy chuan " + checkOutTime);
         System.out.println("Lam tron so thap phan " + rounding);
-        
+
         saveSetting("op.checkin", checkInTime);
         saveSetting("op.checkout", checkOutTime);
         saveSetting("op.rounding", String.valueOf(rounding));
@@ -44,7 +44,7 @@ public class SettingServiceImpl implements ISettingService {
         if (smtpServer != null && !smtpServer.isEmpty()) {
             System.out.println("=> Dang ket noi toi may chu...Thanh cong!");
         }
-        
+
         saveSetting("hw.smtp", smtpServer);
         saveSetting("hw.printer", printerAddress);
     }

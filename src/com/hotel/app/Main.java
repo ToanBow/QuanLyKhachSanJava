@@ -1,55 +1,105 @@
 package com.hotel.app;
 
-import com.hotel.model.User;
-import com.hotel.service.IAuthService;
-import com.hotel.service.ISettingService;
-import com.hotel.service.impl.AuthServiceImpl;
-import com.hotel.service.impl.SettingServiceImpl;
-import com.hotel.util.DBConnection;
-import java.sql.Connection;
+import com.hotel.model.Guest;
+import com.hotel.service.impl.CustomerServiceImpl;
+import com.hotel.service.impl.StayServiceImpl;
+import com.hotel.service.impl.PaymentServiceImpl;
+import com.hotel.service.impl.ReportServiceImpl;
+import com.hotel.util.EmailReportUtil;
+
+import java.time.LocalDate;
+import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
-        System.out.println("========== KIỂM TRA HỆ THỐNG HMS ==========");
 
-        // 1. Kiểm tra kết nối CSDL
-        Connection conn = DBConnection.getConnection();
-        if (conn != null) {
-            System.out.println("[OK] Kết nối Database thành công.");
-            DBConnection.closeConnection(conn);
-        } else {
-            System.out.println("[ERROR] Kết nối Database thất bại. Vui lòng kiểm tra file DBConnection.java.");
-            return; 
+        try {
+
+            Scanner sc = new Scanner(System.in);
+
+            CustomerServiceImpl customerService = new CustomerServiceImpl();
+            StayServiceImpl stayService = new StayServiceImpl();
+            PaymentServiceImpl paymentService = new PaymentServiceImpl();
+            ReportServiceImpl reportService = new ReportServiceImpl();
+
+            System.out.println("===== HE THONG QUAN LY KHACH SAN =====");
+
+            System.out.print("Nhap ma khach: ");
+            String guestId = sc.nextLine();
+
+            System.out.print("Nhap ten khach: ");
+            String name = sc.nextLine();
+
+            System.out.print("Nhap email: ");
+            String email = sc.nextLine();
+
+            System.out.print("Nhap SDT: ");
+            String phone = sc.nextLine();
+
+            System.out.print("Nhap CCCD: ");
+            String cccd = sc.nextLine();
+
+            Guest guest = new Guest(guestId, name, email, phone, cccd);
+
+            // ✅ Đúng tên method trong project
+            customerService.addCustomer(guest);
+
+            System.out.println("Them khach thanh cong");
+
+            System.out.print("Nhap ma phong: ");
+            String roomId = sc.nextLine();
+
+            stayService.checkIn(guestId, roomId);
+            System.out.println("Checkin thanh cong");
+
+            System.out.print("Nhap so tien thanh toan: ");
+            double amount = Double.parseDouble(sc.nextLine());
+
+            paymentService.processPayment(guestId, amount);
+            System.out.println("Thanh toan thanh cong");
+
+            // ✅ Đúng tên method trong ReportServiceImpl
+            double revenue = reportService.calculateRevenue(
+                    LocalDate.now().getMonthValue(),
+                    LocalDate.now().getYear()
+            );
+
+            double occupancy = reportService.getOccupancyRate();
+
+            System.out.println("Doanh thu thang: " + revenue);
+            System.out.println("Ty le lap day: " + occupancy + "%");
+
+            // ✅ EmailUtil là static
+            String content =
+                    "===== BAO CAO HE THONG KHACH SAN =====\n\n" +
+
+                            "1. THONG TIN KHACH HANG\n" +
+                            "Ma khach: " + guestId + "\n" +
+                            "Ten khach: " + name + "\n" +
+                            "Email: " + email + "\n" +
+                            "SDT: " + phone + "\n" +
+                            "CCCD: " + cccd + "\n\n" +
+
+                            "2. THONG TIN DAT PHONG\n" +
+                            "Ma phong: " + roomId + "\n" +
+                            "So tien thanh toan: " + amount + " VND\n\n" +
+
+                            "3. BAO CAO TONG HOP\n" +
+                            "Thang: " + LocalDate.now().getMonthValue() + "/" + LocalDate.now().getYear() + "\n" +
+                            "Tong doanh thu thang: " + revenue + " VND\n" +
+                            "Ty le lap day: " + occupancy + " %\n\n" +
+
+                            "Ngay tao bao cao: " + LocalDate.now() + "\n\n" +
+
+                            "===== HE THONG QUAN LY KHACH SAN =====";
+
+            EmailReportUtil.sendReport(email, content);
+
+            System.out.println("Gui mail thanh cong");
+
+        } catch (Exception e) {
+            System.out.println("LOI: " + e.getMessage());
         }
-
-        // 2. Khởi tạo các Service
-        IAuthService authService = new AuthServiceImpl();
-        ISettingService settingService = new SettingServiceImpl();
-
-        // 3. Kiểm tra Logic Xác thực (AuthService)
-        System.out.println("\n--- 1. Kiểm tra Xác thực người dùng ---");
-        User frontDesk = new User("nhanvien1@hotel.com", "Hotel@123", "Lễ tân");
-        
-        System.out.print("Đăng ký tài khoản mới: ");
-        boolean isReg = authService.register(frontDesk, "Hotel@123");
-        System.out.println(isReg ? "THÀNH CÔNG" : "THẤT BẠI (Có thể đã tồn tại)");
-
-        System.out.print("Thử đăng nhập: ");
-        boolean isLogin = authService.login("nhanvien1@hotel.com", "Hotel@123");
-        System.out.println(isLogin ? "ĐĂNG NHẬP THÀNH CÔNG" : "SAI TÀI KHOẢN/MẬT KHẨU");
-
-        // 4. Kiểm tra Logic Cấu hình (SettingService)
-        System.out.println("\n--- 2. Kiểm tra Cấu hình hệ thống ---");
-        
-        // Cập nhật thông tin khách sạn
-        settingService.updateHotelInfo("Grand Hotel Đông Anh", "Đông Anh, Hà Nội", "0102030405");
-        
-        // Thiết lập giờ quy chuẩn
-        settingService.setOperatingParameters("14:00", "12:00", 0);
-        
-        // Cấu hình kỹ thuật
-        settingService.setupHardwareConnections("smtp.gmail.com", "192.168.1.50");
-
-        System.out.println("Chuc mung nam moi");
     }
 }

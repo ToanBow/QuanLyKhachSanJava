@@ -4,6 +4,8 @@ import com.hotel.model.Room;
 import java.util.List;
 
 public interface IRoomDAO {
+    int countAll();        // thêm
+    int countOccupied();
     // Lấy danh sách phòng để hiển thị dạng lưới trên sơ đồ [cite: 2]
     List<Room> getAllRooms();
 

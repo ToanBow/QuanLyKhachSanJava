@@ -11,16 +11,23 @@ public class Guest {
     private String email;        // Email để gửi hóa đơn [cite: 3]
     private String nationality;  // Quốc tịch [cite: 3]
     private String rank;         // Bạc, Vàng, Kim cương [cite: 28]
+    private boolean blacklist;
+    public Guest(String guestId, String name, String email, String sdt, String cccd) {}
 
-    public Guest() {
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public String getName() {
-        return name;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public boolean isBlacklist() {
+        return blacklist;
+    }
+
+    public void setBlacklist(boolean blacklist) {
+        this.blacklist = blacklist;
     }
 
     public String getCccd() {
@@ -31,12 +38,12 @@ public class Guest {
         this.cccd = cccd;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getGender() {
@@ -47,14 +54,6 @@ public class Guest {
         this.gender = gender;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
     public String getHomeTown() {
         return homeTown;
     }
@@ -63,12 +62,12 @@ public class Guest {
         this.homeTown = homeTown;
     }
 
-    public String getEmail() {
-        return email;
+    public String getName() {
+        return name;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNationality() {
@@ -79,6 +78,14 @@ public class Guest {
         this.nationality = nationality;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getRank() {
         return rank;
     }
@@ -86,5 +93,4 @@ public class Guest {
     public void setRank(String rank) {
         this.rank = rank;
     }
-    
 }

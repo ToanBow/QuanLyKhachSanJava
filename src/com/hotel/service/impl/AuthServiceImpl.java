@@ -2,8 +2,8 @@ package com.hotel.service.impl;
 
 import com.hotel.dao.IUserDAO;
 import com.hotel.model.User;
-import com.hotel.service.IAuthService;
 import com.hotel.dao.impl.UserDAOImpl;
+import com.hotel.service.IAuthService;
 
 public class AuthServiceImpl implements IAuthService {
     private IUserDAO userDAO = new UserDAOImpl();

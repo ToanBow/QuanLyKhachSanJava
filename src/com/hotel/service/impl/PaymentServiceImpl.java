@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
+import java.util.List;
 
 public class PaymentServiceImpl implements IPaymentService {
     @Override
@@ -82,7 +83,12 @@ public class PaymentServiceImpl implements IPaymentService {
         // TODO: Báo cáo chi tiết dòng tiền theo ca làm việc của lễ tân [cite: 32]
         try {
         // goi lop DAO de lay du lieu
-        com.hotel.dao.IInvoiceDAO invoiceDAO = new com.hotel.dao.impl.InvoiceDAOImpl();
+        com.hotel.dao.IInvoiceDAO invoiceDAO = new com.hotel.dao.impl.InvoiceDAOImpl() {
+            @Override
+            public List<Invoice> findAll() {
+                return List.of();
+            }
+        };
         double total = invoiceDAO.getRevenueByShift(employeeId, new java.util.Date());
         System.out.println("--- BÁO CÁO DOANH THU CA ---");
         System.out.println("Nhân viên thực hiện: " + employeeId);

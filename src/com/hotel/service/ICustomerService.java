@@ -1,7 +1,7 @@
 package com.hotel.service;
 
 import com.hotel.model.Guest;
-
+import com.hotel.service.ICustomerService;
 public interface ICustomerService {
     /**
      * [cite_start]Phân hạng thành viên: Tự động xếp hạng (Bạc, Vàng, Kim cương) theo tần suất lưu trú. [cite: 28]

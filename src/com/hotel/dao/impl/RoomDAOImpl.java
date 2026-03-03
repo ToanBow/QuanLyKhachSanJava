@@ -11,6 +11,16 @@ import java.util.List;
 
 public class RoomDAOImpl implements IRoomDAO {
 
+    @Override
+    public int countAll() {
+        return 0;
+    }
+
+    @Override
+    public int countOccupied() {
+        return 0;
+    }
+
     // Lấy danh sách phòng để hiển thị dạng lưới trên sơ đồ [cite: 2]
     @Override
     public List<Room> getAllRooms() {

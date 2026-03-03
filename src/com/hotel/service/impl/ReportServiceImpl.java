@@ -18,4 +18,12 @@ public class ReportServiceImpl implements IReportService {
     public void sendReportToEmail(String managerEmail) {
         // TODO: Gửi báo cáo doanh thu trực tiếp qua Email cho quản lý [cite: 15]
     }
+
+    public double calculateRevenue(int monthValue, int year) {
+        return 0.0;
+    }
+
+    public double calculateRevenue() {
+        return 0.0;
+    }
 }

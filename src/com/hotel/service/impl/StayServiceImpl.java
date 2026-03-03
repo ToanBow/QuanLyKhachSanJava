@@ -9,12 +9,19 @@ import com.hotel.service.IStayService;
 import com.hotel.dao.impl.InvoiceDAOImpl;
 import java.time.LocalDateTime;
 import com.hotel.dao.IInvoiceDAO;
+
+import java.util.List;
 import java.util.UUID;
 import java.io.PrintWriter;
 public class StayServiceImpl implements IStayService {
 
     private IRoomDAO roomDAO = new RoomDAOImpl();
-    private IInvoiceDAO invoiceDAO = new InvoiceDAOImpl();
+    private IInvoiceDAO invoiceDAO = new InvoiceDAOImpl() {
+        @Override
+        public List<Invoice> findAll() {
+            return List.of();
+        }
+    };
 
     @Override
     public boolean checkIn(String roomId, Guest guest, Invoice bookingDetails) {
@@ -127,5 +134,9 @@ public class StayServiceImpl implements IStayService {
     } catch (Exception e) {
         e.printStackTrace();
         }
+    }
+
+    public void checkIn(String guestId, String roomId) {
+
     }
 }

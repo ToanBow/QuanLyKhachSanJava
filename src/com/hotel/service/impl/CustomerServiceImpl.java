@@ -20,4 +20,7 @@ public class CustomerServiceImpl implements ICustomerService {
         // TODO: Truy xuất hồ sơ định danh và lịch sử lưu trú (CRM) [cite: 27]
         return null;
     }
+
+    public void addCustomer(Guest guest) {
+    }
 }

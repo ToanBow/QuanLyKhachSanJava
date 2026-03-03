@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author DELL
  */
-public class InvoiceDAOImpl implements IInvoiceDAO {
+public abstract class InvoiceDAOImpl implements IInvoiceDAO {
     @Override
     public boolean insert(Invoice invoice) {
         //luu hoa don moi khi khach checkout
