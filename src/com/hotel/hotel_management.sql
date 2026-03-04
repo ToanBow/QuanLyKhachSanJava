@@ -88,3 +88,11 @@ CREATE TABLE agency_debts (
     debt_amount DOUBLE DEFAULT 0,
     record_date DATETIME
 );
+ 
+--  9. Bảng blacklists
+CREATE TABLE blacklists (
+    cccd VARCHAR(20) PRIMARY KEY,
+    reason VARCHAR(255) NOT NULL,
+    record_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cccd) REFERENCES guests(cccd)
+);

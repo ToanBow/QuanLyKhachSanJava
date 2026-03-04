@@ -11,7 +11,7 @@ public class AuthServiceImpl implements IAuthService {
     public boolean register(User newUser, String confirmPassword) {
         // TODO: Kiểm tra định dạng email và mật khẩu 8 ký tự (chữ + số + in hoa + đặc biệt) [cite: 1]
         // TODO: Kiểm tra mật khẩu nhập lại có khớp không và email đã tồn tại chưa [cite: 1]
-        String emailRegex = "^[A-Za-z0-9]+@(.+)$";
+        String emailRegex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         if (!newUser.getEmail().matches(emailRegex)) {
             System.out.println("Loi dinh dang Mail, vui long thu lai nhe!");
             return false;
