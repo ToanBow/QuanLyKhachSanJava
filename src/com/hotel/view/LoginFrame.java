@@ -20,7 +20,7 @@ public class LoginFrame extends JFrame {
         // Khởi tạo Service xử lý logic xác thực
         authService = new AuthServiceImpl();
         
-        setTitle("Hệ thống Quản lý Khách sạn HMS");
+        setTitle("Hệ thống Quản lý Khách sạn Nhóm 2 - CNTT1");
         setSize(400, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Hiển thị ở giữa màn hình
@@ -42,8 +42,8 @@ public class LoginFrame extends JFrame {
         JPanel panel = new JPanel(null);
         panel.setBackground(Color.WHITE);
 
-        JLabel titleLabel = new JLabel("ĐĂNG NHẬP HMS", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        JLabel titleLabel = new JLabel("ĐĂNG NHẬP HỆ THỐNG", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Times New Roman", Font.BOLD, 24));
         titleLabel.setBounds(50, 40, 300, 40);
         panel.add(titleLabel);
 
@@ -72,7 +72,7 @@ public class LoginFrame extends JFrame {
         JButton loginBtn = new JButton("Đăng nhập");
         loginBtn.setBounds(50, 260, 300, 40);
         loginBtn.setBackground(new Color(0, 123, 255));
-        loginBtn.setForeground(Color.WHITE);
+        loginBtn.setForeground(Color.BLACK);
         loginBtn.setFocusPainted(false);
         panel.add(loginBtn);
 
@@ -121,7 +121,7 @@ public class LoginFrame extends JFrame {
         panel.setBackground(Color.WHITE);
 
         JLabel titleLabel = new JLabel("ĐĂNG KÝ TÀI KHOẢN", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        titleLabel.setFont(new Font("Times New Roman", Font.BOLD, 22));
         titleLabel.setBounds(50, 30, 300, 40);
         panel.add(titleLabel);
 
@@ -167,7 +167,7 @@ public class LoginFrame extends JFrame {
         JButton registerBtn = new JButton("Đăng ký");
         registerBtn.setBounds(50, 350, 300, 40);
         registerBtn.setBackground(new Color(40, 167, 69));
-        registerBtn.setForeground(Color.WHITE);
+        registerBtn.setForeground(Color.BLACK);
         registerBtn.setFocusPainted(false);
         panel.add(registerBtn);
 
