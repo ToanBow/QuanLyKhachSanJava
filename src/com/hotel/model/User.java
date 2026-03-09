@@ -1,8 +1,8 @@
 package com.hotel.model;
 public class User {
-    private String email;      // Định dạng email [cite: 1]
+    private String email;      // Định dạng email 
     private String password;   // 8 ký tự: chữ + số + in hoa + đặc biệt 
-    private String role;       // Quản lý, Lễ tân, Kế toán, Buồng phòng [cite: 34]
+    private String role;       // Quản lý, Lễ tân, Kế toán, Buồng phòng 
 
     public User() {}
 

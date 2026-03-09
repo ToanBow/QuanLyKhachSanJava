@@ -6,16 +6,16 @@ public class Invoice {
     private String invoiceId;
     private String roomId;
     private String guestCccd;
-    private LocalDateTime checkInTime;    // Tự động lấy từ máy [cite: 4]
+    private LocalDateTime checkInTime;    // Tự động lấy từ máy
     private LocalDateTime checkOutTime;
-    private String rentalType;   // Theo ngày/Theo giờ [cite: 4]
-    private double deposit;      // Tiền trả trước [cite: 4]
-    private double earlySurcharge; // Phụ thu check-in sớm [cite: 10]
-    private double lateSurcharge;  // Phụ thu check-out muộn [cite: 9]
-    private double discount;     // Giảm giá % [cite: 11]
-    private List<ServiceUsage> services; // Danh sách dịch vụ đã dùng [cite: 8]
-    private String paymentMethod; // Tiền mặt, tín dụng, nợ [cite: 11]
-    private double totalAmount; // Tổng tiền sau thuế và giảm giá [cite: 7]
+    private String rentalType;   // Theo ngày/Theo giờ 
+    private double deposit;      // Tiền trả trước 
+    private double earlySurcharge; // Phụ thu check-in sớm 
+    private double lateSurcharge;  // Phụ thu check-out muộn 
+    private double discount;     // Giảm giá % 
+    private List<ServiceUsage> services; // Danh sách dịch vụ đã dùng 
+    private String paymentMethod; // Tiền mặt, tín dụng, nợ
+    private double totalAmount; // Tổng tiền sau thuế và giảm giá
     private String status; //trạng thái hóa đơn
 
     public Invoice() {}

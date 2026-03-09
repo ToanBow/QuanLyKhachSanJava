@@ -12,25 +12,25 @@ public class RoomServiceImpl implements IRoomService {
 
     @Override
     public List<Room> getRoomMap() {
-        //Lấy danh sách phòng hiển thị dạng lưới, phân biệt tầng và màu sắc trạng thái [cite: 2]
+        //Lấy danh sách phòng hiển thị dạng lưới, phân biệt tầng và màu sắc trạng thái 
         return roomDAO.getAllRooms();
     }
 
     @Override
     public void updatePricingPolicy(String roomTypeId, double dayPrice, double hourPrice) {
-        // Thiết lập bảng giá linh hoạt theo giờ, ngày, tuần, mùa [cite: 18, 19]
+        // Thiết lập bảng giá linh hoạt theo giờ, ngày, tuần, mùa 
         roomDAO.updatePricing(roomTypeId, dayPrice, hourPrice);
     }
 
     @Override
     public void setMaintenance(String roomId, String reason, String expectedFinishDate) {
-        // Chuyển sang trạng thái "Đang sửa chữa" kèm lý do [cite: 20]
+        // Chuyển sang trạng thái "Đang sửa chữa" kèm lý do 
         roomDAO.updateStatus(roomId,"Đang sửa chữa");
     }
 
     @Override
     public void confirmCleaningStatus(String roomId) {
-        // Xác nhận dọn xong để đưa phòng về trạng thái "Sẵn sàng" [cite: 13]
+        // Xác nhận dọn xong để đưa phòng về trạng thái "Sẵn sàng" 
          roomDAO.updateStatus(roomId,"Sẵn sàng");
     }
 }

@@ -2,15 +2,15 @@ package com.hotel.model;
 import java.util.Date;
 
 public class Guest {
-    private String name;         // Tên khách hàng [cite: 3]
-    private String cccd;         // CCCD/Passport [cite: 3, 27]
-    private String phone;        // Số điện thoại [cite: 3]
-    private String gender;       // Giới tính [cite: 3]
-    private Date birthDate;      // Ngày sinh [cite: 3]
-    private String homeTown;     // Quê quán [cite: 3]
-    private String email;        // Email để gửi hóa đơn [cite: 3]
-    private String nationality;  // Quốc tịch [cite: 3]
-    private String rank;         // Bạc, Vàng, Kim cương [cite: 28]
+    private String name;         // Tên khách hàng
+    private String cccd;         // CCCD/Passport 
+    private String phone;        // Số điện thoại 
+    private String gender;       // Giới tính 
+    private Date birthDate;      // Ngày sinh 
+    private String homeTown;     // Quê quán
+    private String email;        // Email để gửi hóa đơn 
+    private String nationality;  // Quốc tịch
+    private String rank;         // Bạc, Vàng, Kim cương
     private boolean blacklist;
     public Guest(String guestId, String name, String email, String phone, String cccd) {
         this.name = name;

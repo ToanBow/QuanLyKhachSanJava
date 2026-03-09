@@ -37,7 +37,7 @@ public class LoginFrame extends JFrame {
         cardLayout.show(mainPanel, "LOGIN");
     }
 
-    // ================= MÀN HÌNH ĐĂNG NHẬP =================
+    //MÀN HÌNH ĐĂNG NHẬP
     private JPanel createLoginPanel() {
         JPanel panel = new JPanel(null);
         panel.setBackground(Color.WHITE);
@@ -105,8 +105,6 @@ public class LoginFrame extends JFrame {
                 this.dispose(); // Đóng cửa sổ đăng nhập
                 
                 // Kích hoạt giao diện chính hoặc console menu tại đây
-                // Mở comment dòng dưới nếu bạn muốn chạy Main Console sau khi đăng nhập xong:
-                // Main.main(new String[]{}); 
             } else {
                 JOptionPane.showMessageDialog(this, "Sai tài khoản hoặc mật khẩu!", "Lỗi Đăng Nhập", JOptionPane.ERROR_MESSAGE);
             }
@@ -214,7 +212,7 @@ public class LoginFrame extends JFrame {
         return panel;
     }
 
-    // ================= CÁC HÀM TIỆN ÍCH (UTILITIES) =================
+    //CÁC HÀM TIỆN ÍCH
     
     // Tính năng ẩn/hiện mật khẩu áp dụng cho cả trường mật khẩu và xác nhận mật khẩu
     private void togglePasswordVisibility(JCheckBox checkBox, JPasswordField passField, JPasswordField confirmPassField) {
