@@ -5,6 +5,24 @@ import com.hotel.service.IPaymentService;
 import com.hotel.dao.IInvoiceDAO;
 import com.hotel.dao.impl.InvoiceDAOImpl;
 
+//itext7
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.properties.HorizontalAlignment;
+//zxing, xu ly ma qr
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+//file va luonng
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import com.hotel.util.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,19 +65,76 @@ public class PaymentServiceImpl implements IPaymentService {
     }
     // in hoa don ra file
     public void printInvoiceToFile(Invoice invoice) {
-        String fileName = "Invoice_" + invoice.getInvoiceId() + ".txt";
-        try (java.io.PrintWriter writer = new java.io.PrintWriter(fileName)) {
-            writer.println("---------- HOTEL RECEIPT ----------");
-            writer.println("Invoice ID: " + invoice.getInvoiceId());
-            writer.println("Room: " + invoice.getRoomId());
-            writer.println("Total Amount: " + invoice.getTotalAmount());
-            writer.println("Method: " + invoice.getPaymentMethod());
-            writer.println("-----------------------------------");
-            System.out.println("Đã in hóa đơn thành công: " + fileName);
-        } catch (Exception e) { 
-            e.printStackTrace(); 
+        if (invoice == null) {
+            System.err.println("Invoice null");
+            return;
+        }
+        String fileName = "Invoice_" + invoice.getInvoiceId() + ".pdf";
+        try {
+            //khoi tao itext
+            PdfWriter writer = new PdfWriter(new FileOutputStream(fileName));
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+
+            //tieu de
+            Paragraph header = new Paragraph("HOA DON KHACH SAN");
+            header.setFontSize(20f); 
+            header.setBold();
+            header.setMarginBottom(10f);
+            document.add(header);
+
+            //thong tin chi tiet
+            document.add(new Paragraph("Ma hoa don: " + invoice.getInvoiceId()));
+            document.add(new Paragraph("Phong: " + invoice.getRoomId()));
+            document.add(new Paragraph("Khach hang: " + invoice.getGuestCccd()));
+
+            //chi tiet dich vu
+            document.add(new Paragraph("Chi tiet thanh toan:"));
+            Table table = new Table(UnitValue.createPercentArray(new float[]{70, 30}));
+            table.setWidth(UnitValue.createPercentValue(100));
+            table.addCell("Khoan muc");
+            table.addCell("So tien (VND)");
+            
+            table.addCell("Tien phong & Phu thu");
+            table.addCell(String.format("%,.0f", invoice.getTotalAmount() + invoice.getDeposit()));
+            
+            table.addCell("Giam gia");
+            table.addCell("-" + invoice.getDiscount() + "%");
+            
+            document.add(table);
+
+            //tong tien
+            document.add(new Paragraph("\nTONG TIEN THANH TOAN: " + String.format("%,.0f", invoice.getTotalAmount()) + " VNĐ")
+                    .setBold().setFontSize(15));
+
+            //tao va chen ma qr thanh toan
+            String qrContent = "Banking: 123456789 | Amount: " + invoice.getTotalAmount() 
+                             + " | Msg: " + invoice.getInvoiceId();
+            
+            byte[] qrBytes = generateQRCodeBytes(qrContent, 200, 200);
+            Image qrImage = new Image(ImageDataFactory.create(qrBytes));
+            qrImage.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            
+            document.add(new Paragraph("\nQUET MA DE THANH TOAN").setHorizontalAlignment(HorizontalAlignment.CENTER));
+            document.add(qrImage);
+
+            document.close();
+            System.out.println("Đã xuất hóa đơn PDF thành công: " + fileName);
+
+        } catch (Exception e) {
+            System.err.println("Lỗi tạo PDF: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+    private byte[] generateQRCodeBytes(String text, int width, int height) throws Exception {
+    QRCodeWriter qrCodeWriter = new QRCodeWriter();
+    BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+        
+    ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+    MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+    return pngOutputStream.toByteArray();
+    }
+    
     @Override
     public void manageAgencyDebt(String agencyId, double amount) {
         // TODO: Theo dõi công nợ của khách đoàn hoặc đại lý OTA [cite: 31]
@@ -96,4 +171,5 @@ public class PaymentServiceImpl implements IPaymentService {
             e.printStackTrace(); 
         }
     }
+    
 }
