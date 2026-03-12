@@ -63,7 +63,7 @@ public class PaymentServiceImpl implements IPaymentService {
             break;
     }
     }
-    // in hoa don ra file
+    // in hoa don ra file pdf
     public void printInvoiceToFile(Invoice invoice) {
         if (invoice == null) {
             System.err.println("Invoice null");

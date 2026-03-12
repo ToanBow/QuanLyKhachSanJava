@@ -29,7 +29,7 @@ public class Main {
 //    // 2. Gọi Service để in PDF
 //    PaymentServiceImpl paymentService = new PaymentServiceImpl();
 //    paymentService.printInvoiceToFile(testInvoice);
-//    
+//    //
 //    System.out.println("Hãy kiểm tra thư mục dự án để xem file PDF!");
         // 1. Kiểm tra kết nối CSDL
         try (Connection conn = DBConnection.getConnection()) {
