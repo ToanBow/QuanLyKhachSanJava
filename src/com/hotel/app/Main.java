@@ -17,8 +17,20 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) {
+//        // 1. Giả lập một hóa đơn
+//    Invoice testInvoice = new Invoice();
+//    testInvoice.setInvoiceId("HD001");
+//    testInvoice.setRoomId("P101");
+//    testInvoice.setGuestCccd("0123456789");
+//    testInvoice.setTotalAmount(1500000); // 1.5 triệu
+//    testInvoice.setDiscount(10);        // Giảm 10%
+//
+//    // 2. Gọi Service để in PDF
+//    PaymentServiceImpl paymentService = new PaymentServiceImpl();
+//    paymentService.printInvoiceToFile(testInvoice);
+//    
+//    System.out.println("Hãy kiểm tra thư mục dự án để xem file PDF!");
         // 1. Kiểm tra kết nối CSDL
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
