@@ -6,16 +6,16 @@ import java.util.Date;
 
 public interface IInvoiceDAO {
     List<Invoice> findAll();
-    // Lưu hóa đơn mới sau khi khách hàng thanh toán hoặc Check-out [cite: 7, 12]
+    // Lưu hóa đơn mới sau khi khách hàng thanh toán hoặc Check-out
     boolean insert(Invoice invoice);
 
-    // Tìm hóa đơn của một phòng đang có khách (để tính tiền tạm tính) [cite: 6]
+    // Tìm hóa đơn của một phòng đang có khách (để tính tiền tạm tính) 
     Invoice findActiveInvoiceByRoom(String roomId);
 
-    // Lấy danh sách hóa đơn theo khoảng thời gian để báo cáo doanh thu [cite: 14, 26]
+    // Lấy danh sách hóa đơn theo khoảng thời gian để báo cáo doanh thu 
     List<Invoice> getInvoicesByPeriod(Date startDate, Date endDate);
 
-    // Thống kê doanh thu theo ca làm việc của nhân viên [cite: 32]
+    // Thống kê doanh thu theo ca làm việc của nhân viên 
     double getRevenueByShift(String employeeId, Date shiftTime);
 
     Invoice findById(String invoiceId);

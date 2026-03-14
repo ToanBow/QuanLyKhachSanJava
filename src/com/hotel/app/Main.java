@@ -18,19 +18,19 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-//        // 1. Giả lập một hóa đơn
-//    Invoice testInvoice = new Invoice();
-//    testInvoice.setInvoiceId("HD001");
-//    testInvoice.setRoomId("P101");
-//    testInvoice.setGuestCccd("0123456789");
-//    testInvoice.setTotalAmount(1500000); // 1.5 triệu
-//    testInvoice.setDiscount(10);        // Giảm 10%
-//
-//    // 2. Gọi Service để in PDF
-//    PaymentServiceImpl paymentService = new PaymentServiceImpl();
-//    paymentService.printInvoiceToFile(testInvoice);
-//    //
-//    System.out.println("Hãy kiểm tra thư mục dự án để xem file PDF!");
+       // 1. Giả lập một hóa đơn
+   Invoice testInvoice = new Invoice();
+   testInvoice.setInvoiceId("HD001");
+   testInvoice.setRoomId("P101");
+   testInvoice.setGuestCccd("0123456789");
+   testInvoice.setTotalAmount(1500000); // 1.5 triệu
+   testInvoice.setDiscount(10);        // Giảm 10%
+
+   // 2. Gọi Service để in PDF
+   PaymentServiceImpl paymentService = new PaymentServiceImpl();
+   paymentService.printInvoiceToFile(testInvoice);
+   //
+   System.out.println("Hãy kiểm tra thư mục dự án để xem file PDF!");
         // 1. Kiểm tra kết nối CSDL
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
@@ -47,7 +47,7 @@ public class Main {
         // 2. Khởi tạo các Service
         RoomServiceImpl roomService = new RoomServiceImpl();
         StayServiceImpl stayService = new StayServiceImpl();
-        PaymentServiceImpl paymentService = new PaymentServiceImpl();
+        // PaymentServiceImpl paymentService = new PaymentServiceImpl();
         ReportServiceImpl reportService = new ReportServiceImpl();
         ServiceDAOImpl serviceDAO = new ServiceDAOImpl();
 
