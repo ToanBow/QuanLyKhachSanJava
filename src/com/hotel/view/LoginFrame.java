@@ -3,9 +3,10 @@ package com.hotel.view;
 import com.hotel.model.User;
 import com.hotel.service.IAuthService;
 import com.hotel.service.impl.AuthServiceImpl;
-import com.hotel.app.Main; // Giả định bạn sẽ gọi Main để chạy tiếp ứng dụng
+import com.hotel.app.Main;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,81 +15,104 @@ public class LoginFrame extends JFrame {
 
     private IAuthService authService;
     private CardLayout cardLayout;
-    private JPanel mainPanel;
+    private JPanel rightPanel;
+
+    // Bảng màu chuẩn UI hiện đại
+    private final Color PRIMARY_COLOR = new Color(26, 35, 126); // Xanh đậm
+    private final Color ACCENT_COLOR = new Color(13, 71, 161); // Xanh nút bấm
+    private final Color SUCCESS_COLOR = new Color(46, 125, 50); // Xanh lá đăng ký
+    private final Color TEXT_COLOR = new Color(33, 33, 33);
+    private final Font MAIN_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+    private final Font TITLE_FONT = new Font("Segoe UI", Font.BOLD, 28);
 
     public LoginFrame() {
-        // Khởi tạo Service xử lý logic xác thực
         authService = new AuthServiceImpl();
-        
+
         setTitle("Hệ thống Quản lý Khách sạn Nhóm 2 - CNTT1");
-        setSize(400, 600);
+        setSize(800, 500); // Mở rộng chiều ngang để chia đôi màn hình
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Hiển thị ở giữa màn hình
+        setLocationRelativeTo(null);
         setResizable(false);
+        setLayout(new BorderLayout());
 
+        //Panel Bên Trái (Branding)
+        JPanel leftPanel = new JPanel(new GridBagLayout());
+        leftPanel.setBackground(PRIMARY_COLOR);
+        leftPanel.setPreferredSize(new Dimension(350, 500));
+
+        JLabel welcomeLabel = new JLabel("<html><div style='text-align: center;'>KHÁCH SẠN<br>ÁNH TRĂNG</div></html>");
+        welcomeLabel.setFont(TITLE_FONT);
+        welcomeLabel.setForeground(Color.WHITE);
+        leftPanel.add(welcomeLabel);
+
+        add(leftPanel, BorderLayout.WEST);
+
+        //Panel Bên Phải (Chứa form Đăng nhập / Đăng ký)
         cardLayout = new CardLayout();
-        mainPanel = new JPanel(cardLayout);
+        rightPanel = new JPanel(cardLayout);
+        rightPanel.setBackground(Color.WHITE);
 
-        // Khởi tạo 2 màn hình
-        mainPanel.add(createLoginPanel(), "LOGIN");
-        mainPanel.add(createRegisterPanel(), "REGISTER");
+        rightPanel.add(createLoginPanel(), "LOGIN");
+        rightPanel.add(createRegisterPanel(), "REGISTER");
 
-        add(mainPanel);
-        cardLayout.show(mainPanel, "LOGIN");
+        add(rightPanel, BorderLayout.CENTER);
+        cardLayout.show(rightPanel, "LOGIN");
     }
 
-    //MÀN HÌNH ĐĂNG NHẬP
+    // MÀN HÌNH ĐĂNG NHẬP
     private JPanel createLoginPanel() {
-        JPanel panel = new JPanel(null);
+        JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
+        GridBagConstraints gbc = createGbc();
 
-        JLabel titleLabel = new JLabel("ĐĂNG NHẬP HỆ THỐNG", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Times New Roman", Font.BOLD, 24));
-        titleLabel.setBounds(50, 40, 300, 40);
-        panel.add(titleLabel);
+        JLabel titleLabel = new JLabel("ĐĂNG NHẬP");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(PRIMARY_COLOR);
+        gbc.insets = new Insets(0, 0, 30, 0);
+        panel.add(titleLabel, gbc);
 
+        gbc.insets = new Insets(5, 0, 5, 0);
+        
         JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setBounds(50, 100, 300, 20);
-        panel.add(emailLabel);
+        emailLabel.setFont(MAIN_FONT);
+        panel.add(emailLabel, gbc);
 
-        JTextField emailField = new JTextField();
-        emailField.setBounds(50, 120, 300, 30);
-        panel.add(emailField);
+        JTextField emailField = createTextField();
+        panel.add(emailField, gbc);
 
         JLabel passLabel = new JLabel("Mật khẩu:");
-        passLabel.setBounds(50, 160, 300, 20);
-        panel.add(passLabel);
+        passLabel.setFont(MAIN_FONT);
+        gbc.insets = new Insets(15, 0, 5, 0);
+        panel.add(passLabel, gbc);
 
-        JPasswordField passField = new JPasswordField();
-        passField.setBounds(50, 180, 300, 30);
-        panel.add(passField);
+        JPasswordField passField = createPasswordField();
+        gbc.insets = new Insets(5, 0, 5, 0);
+        panel.add(passField, gbc);
 
         JCheckBox showPassCheck = new JCheckBox("Hiển thị mật khẩu");
         showPassCheck.setBackground(Color.WHITE);
-        showPassCheck.setBounds(50, 215, 150, 20);
+        showPassCheck.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         showPassCheck.addActionListener(e -> togglePasswordVisibility(showPassCheck, passField, null));
-        panel.add(showPassCheck);
+        panel.add(showPassCheck, gbc);
 
-        JButton loginBtn = new JButton("Đăng nhập");
-        loginBtn.setBounds(50, 260, 300, 40);
-        loginBtn.setBackground(new Color(0, 123, 255));
-        loginBtn.setForeground(Color.BLACK);
-        loginBtn.setFocusPainted(false);
-        panel.add(loginBtn);
+        JButton loginBtn = createButton("Đăng Nhập", ACCENT_COLOR);
+        gbc.insets = new Insets(20, 0, 15, 0);
+        panel.add(loginBtn, gbc);
 
-        JLabel switchLabel = new JLabel("Chưa có tài khoản? Đăng ký ngay", SwingConstants.CENTER);
-        switchLabel.setForeground(Color.BLUE);
+        JLabel switchLabel = new JLabel("Chưa có tài khoản? Đăng ký ngay");
+        switchLabel.setForeground(ACCENT_COLOR);
+        switchLabel.setFont(MAIN_FONT);
         switchLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        switchLabel.setBounds(50, 310, 300, 20);
         switchLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                cardLayout.show(mainPanel, "REGISTER");
+                cardLayout.show(rightPanel, "REGISTER");
             }
         });
-        panel.add(switchLabel);
+        gbc.insets = new Insets(10, 0, 0, 0);
+        panel.add(switchLabel, gbc);
 
-        // Xử lý sự kiện Đăng nhập liên kết với AuthServiceImpl
+        //Logic Đăng nhập
         loginBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             String password = new String(passField.getPassword());
@@ -98,13 +122,11 @@ public class LoginFrame extends JFrame {
                 return;
             }
 
-            // Gọi logic Auth
-            boolean isSuccess = authService.login(email, password);
-            if (isSuccess) {
+            if (authService.login(email, password)) {
                 JOptionPane.showMessageDialog(this, "Đăng nhập thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                this.dispose(); // Đóng cửa sổ đăng nhập
-                
-                // Kích hoạt giao diện chính hoặc console menu tại đây
+                this.dispose();
+                // Kích hoạt luồng Main
+                new Thread(() -> Main.main(new String[0])).start();
             } else {
                 JOptionPane.showMessageDialog(this, "Sai tài khoản hoặc mật khẩu!", "Lỗi Đăng Nhập", JOptionPane.ERROR_MESSAGE);
             }
@@ -113,75 +135,64 @@ public class LoginFrame extends JFrame {
         return panel;
     }
 
-    // ================= MÀN HÌNH ĐĂNG KÝ =================
+    //MÀN HÌNH ĐĂNG KÝ
     private JPanel createRegisterPanel() {
-        JPanel panel = new JPanel(null);
+        JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
+        GridBagConstraints gbc = createGbc();
 
-        JLabel titleLabel = new JLabel("ĐĂNG KÝ TÀI KHOẢN", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Times New Roman", Font.BOLD, 22));
-        titleLabel.setBounds(50, 30, 300, 40);
-        panel.add(titleLabel);
+        JLabel titleLabel = new JLabel("TẠO TÀI KHOẢN");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(SUCCESS_COLOR);
+        gbc.insets = new Insets(0, 0, 20, 0);
+        panel.add(titleLabel, gbc);
 
-        JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setBounds(50, 80, 300, 20);
-        panel.add(emailLabel);
+        gbc.insets = new Insets(5, 0, 2, 0);
 
-        JTextField emailField = new JTextField();
-        emailField.setBounds(50, 100, 300, 30);
-        panel.add(emailField);
+        panel.add(new JLabel("Email:"), gbc);
+        JTextField emailField = createTextField();
+        panel.add(emailField, gbc);
 
-        JLabel passLabel = new JLabel("Mật khẩu:");
-        passLabel.setBounds(50, 140, 300, 20);
-        panel.add(passLabel);
+        panel.add(new JLabel("Mật khẩu:"), gbc);
+        JPasswordField passField = createPasswordField();
+        panel.add(passField, gbc);
 
-        JPasswordField passField = new JPasswordField();
-        passField.setBounds(50, 160, 300, 30);
-        panel.add(passField);
+        panel.add(new JLabel("Xác nhận Mật khẩu:"), gbc);
+        JPasswordField confirmPassField = createPasswordField();
+        panel.add(confirmPassField, gbc);
 
-        JLabel confirmPassLabel = new JLabel("Xác nhận Mật khẩu:");
-        confirmPassLabel.setBounds(50, 200, 300, 20);
-        panel.add(confirmPassLabel);
-
-        JPasswordField confirmPassField = new JPasswordField();
-        confirmPassField.setBounds(50, 220, 300, 30);
-        panel.add(confirmPassField);
-
-        JLabel roleLabel = new JLabel("Vai trò:");
-        roleLabel.setBounds(50, 260, 300, 20);
-        panel.add(roleLabel);
-
+        panel.add(new JLabel("Vai trò:"), gbc);
         String[] roles = {"Quản lý", "Lễ tân", "Kế toán", "Buồng phòng"};
         JComboBox<String> roleCombo = new JComboBox<>(roles);
-        roleCombo.setBounds(50, 280, 300, 30);
-        panel.add(roleCombo);
+        roleCombo.setFont(MAIN_FONT);
+        roleCombo.setPreferredSize(new Dimension(300, 35));
+        roleCombo.setBackground(Color.WHITE);
+        panel.add(roleCombo, gbc);
 
         JCheckBox showPassCheck = new JCheckBox("Hiển thị mật khẩu");
         showPassCheck.setBackground(Color.WHITE);
-        showPassCheck.setBounds(50, 315, 150, 20);
+        showPassCheck.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         showPassCheck.addActionListener(e -> togglePasswordVisibility(showPassCheck, passField, confirmPassField));
-        panel.add(showPassCheck);
+        panel.add(showPassCheck, gbc);
 
-        JButton registerBtn = new JButton("Đăng ký");
-        registerBtn.setBounds(50, 350, 300, 40);
-        registerBtn.setBackground(new Color(40, 167, 69));
-        registerBtn.setForeground(Color.BLACK);
-        registerBtn.setFocusPainted(false);
-        panel.add(registerBtn);
+        JButton registerBtn = createButton("Đăng Ký", SUCCESS_COLOR);
+        gbc.insets = new Insets(15, 0, 10, 0);
+        panel.add(registerBtn, gbc);
 
-        JLabel switchLabel = new JLabel("Đã có tài khoản? Quay lại đăng nhập", SwingConstants.CENTER);
-        switchLabel.setForeground(Color.BLUE);
+        JLabel switchLabel = new JLabel("Đã có tài khoản? Đăng nhập");
+        switchLabel.setForeground(SUCCESS_COLOR);
+        switchLabel.setFont(MAIN_FONT);
         switchLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        switchLabel.setBounds(50, 410, 300, 20);
         switchLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                cardLayout.show(mainPanel, "LOGIN");
+                cardLayout.show(rightPanel, "LOGIN");
             }
         });
-        panel.add(switchLabel);
+        gbc.insets = new Insets(5, 0, 0, 0);
+        panel.add(switchLabel, gbc);
 
-        // Xử lý sự kiện Đăng ký liên kết với AuthServiceImpl
+        // Logic Đăng ký
         registerBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             String password = new String(passField.getPassword());
@@ -193,18 +204,13 @@ public class LoginFrame extends JFrame {
                 return;
             }
 
-            // Khởi tạo đối tượng User với thông tin đã nhập
             User newUser = new User(email, password, role);
-
-            // Chuyển giao việc kiểm tra Regex và lưu CSDL cho Service
-            boolean isSuccess = authService.register(newUser, confirmPassword);
-            
-            if (isSuccess) {
+            if (authService.register(newUser, confirmPassword)) {
                 JOptionPane.showMessageDialog(this, "Đăng ký thành công! Vui lòng đăng nhập.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                cardLayout.show(mainPanel, "LOGIN");
+                cardLayout.show(rightPanel, "LOGIN");
             } else {
                 JOptionPane.showMessageDialog(this, 
-                    "Đăng ký thất bại!\n- Vui lòng kiểm tra lại mật khẩu khớp nhau.\n- Mật khẩu cần 8 ký tự (chữ hoa, chữ thường, số, ký tự đặc biệt).\n- Hoặc email đã tồn tại.", 
+                    "Đăng ký thất bại!\n- Mật khẩu phải khớp nhau.\n- Mật khẩu cần 8 ký tự (chữ hoa, thường, số, ký tự đặc biệt).\n- Hoặc email đã tồn tại.", 
                     "Lỗi Đăng Ký", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -212,9 +218,62 @@ public class LoginFrame extends JFrame {
         return panel;
     }
 
-    //CÁC HÀM TIỆN ÍCH
-    
-    // Tính năng ẩn/hiện mật khẩu áp dụng cho cả trường mật khẩu và xác nhận mật khẩu
+    //CÁC HÀM TIỆN ÍCH UI
+
+    private GridBagConstraints createGbc() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER;
+        return gbc;
+    }
+
+    private JTextField createTextField() {
+        JTextField field = new JTextField();
+        field.setPreferredSize(new Dimension(300, 38));
+        field.setFont(MAIN_FONT);
+        field.setForeground(TEXT_COLOR);
+        field.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
+                new EmptyBorder(5, 10, 5, 10)));
+        return field;
+    }
+
+    private JPasswordField createPasswordField() {
+        JPasswordField field = new JPasswordField();
+        field.setPreferredSize(new Dimension(300, 38));
+        field.setFont(MAIN_FONT);
+        field.setForeground(TEXT_COLOR);
+        field.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
+                new EmptyBorder(5, 10, 5, 10)));
+        return field;
+    }
+
+    private JButton createButton(String text, Color bgColor) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(300, 42));
+        button.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Hover effect
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(bgColor.brighter());
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(bgColor);
+            }
+        });
+        return button;
+    }
+
     private void togglePasswordVisibility(JCheckBox checkBox, JPasswordField passField, JPasswordField confirmPassField) {
         char echoChar = checkBox.isSelected() ? (char) 0 : '\u2022';
         passField.setEchoChar(echoChar);
@@ -224,6 +283,7 @@ public class LoginFrame extends JFrame {
     }
 
     public static void main(String[] args) {
+        // Kích hoạt giao diện hệ thống (Native Look and Feel)
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
