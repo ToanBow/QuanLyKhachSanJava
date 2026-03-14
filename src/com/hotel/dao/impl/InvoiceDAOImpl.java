@@ -49,16 +49,25 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
 
     @Override
     public boolean insert(Invoice invoice) {
-        String sql = "INSERT INTO invoices (invoice_id, room_id, guest_cccd, total_amount, payment_method, payment_date) "
-                   + "VALUES (?, ?, ?, ?, ?, NOW())";
+        String sql = "INSERT INTO invoices (invoice_id, room_id, guest_cccd, check_in_time, check_out_time, "
+               + "rental_type, deposit, early_surcharge, late_surcharge, discount, payment_method, total_amount, payment_date) "
+               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         try (Connection conn = DBConnection.getConnection(); 
              PreparedStatement ps = conn.prepareStatement(sql)) { 
             
             ps.setString(1, invoice.getInvoiceId());
             ps.setString(2, invoice.getRoomId());
             ps.setString(3, invoice.getGuestCccd());
-            ps.setDouble(4, invoice.getTotalAmount());
-            ps.setString(5, invoice.getPaymentMethod());            
+            ps.setTimestamp(4, java.sql.Timestamp.valueOf(invoice.getCheckInTime()));
+            ps.setTimestamp(5, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now())); // Check-out lúc này
+            ps.setString(6, invoice.getRentalType());
+            ps.setDouble(7, invoice.getDeposit());
+            ps.setDouble(8, invoice.getEarlySurcharge());
+            ps.setDouble(9, invoice.getLateSurcharge());
+            ps.setDouble(10, invoice.getDiscount());
+            ps.setString(11, invoice.getPaymentMethod());
+            ps.setDouble(12, invoice.getTotalAmount());   
+            
             return ps.executeUpdate() > 0;
         } catch(SQLException e) {
             e.printStackTrace();

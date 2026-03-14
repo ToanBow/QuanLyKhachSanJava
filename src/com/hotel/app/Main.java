@@ -18,19 +18,32 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-//        // 1. Giả lập một hóa đơn
-//    Invoice testInvoice = new Invoice();
-//    testInvoice.setInvoiceId("HD001");
-//    testInvoice.setRoomId("P101");
-//    testInvoice.setGuestCccd("0123456789");
-//    testInvoice.setTotalAmount(1500000); // 1.5 triệu
-//    testInvoice.setDiscount(10);        // Giảm 10%
-//
-//    // 2. Gọi Service để in PDF
+//    System.out.println("\n--- ĐANG CHẠY CHẾ ĐỘ TEST HÓA ĐƠN ---");
+//    System.out.println("\n--- ĐANG KHỞI TẠO HÓA ĐƠN TEST CÓ DỊCH VỤ ---");
 //    PaymentServiceImpl paymentService = new PaymentServiceImpl();
-//    paymentService.printInvoiceToFile(testInvoice);
-//    //
-//    System.out.println("Hãy kiểm tra thư mục dự án để xem file PDF!");
+//    
+//    // 1. Tạo đối tượng Invoice giả
+//    Invoice mockInvoice = new Invoice();
+//    mockInvoice.setInvoiceId("TEST-001");
+//    mockInvoice.setRoomId("101");
+//    mockInvoice.setGuestCccd("0123456789");
+//    mockInvoice.setRentalType("Theo ngay");
+//    mockInvoice.setCheckInTime(java.time.LocalDateTime.now().minusDays(1));
+//    
+//    // Các thông số tiền nong
+//    mockInvoice.setDeposit(100000);   // Đặt cọc
+//    mockInvoice.setDiscount(10);     // Giảm giá
+//    mockInvoice.setTotalAmount(500000); // Tiền phòng gốc 500k
+//    mockInvoice.setPaymentMethod("QR CODE");
+//
+//    // 2. Gọi hàm in hóa đơn
+//    // Hàm này sẽ tự động query vào DB để lấy thêm Coca và Mì tôm bạn vừa INSERT ở trên
+//    System.out.println("[TEST] Đang tạo file PDF: Invoice_TEST-001.pdf...");
+//    paymentService.printInvoiceToFile(mockInvoice);
+//    
+//    System.out.println("--- KẾT THÚC TEST. Vui lòng kiểm tra file trong thư mục dự án ---");
+//    
+        
         // 1. Kiểm tra kết nối CSDL
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
@@ -120,12 +133,25 @@ public class Main {
                         Invoice outInvoice = stayService.processCheckOut(roomOut);
                         if (outInvoice != null) {
                             System.out.printf("Tổng thanh toán: %,.0f VND\n", outInvoice.getTotalAmount());
-                            System.out.print("Phương thức thanh toán (Tiền mặt/Tín dụng): ");
+                            System.out.print("Phương thức thanh toán (Tiền mặt/Tín dụng/QR CODE): ");
                             String method = sc.nextLine().trim();
                             
+                            outInvoice.setPaymentMethod(method);
                             paymentService.processPayment(method, outInvoice.getTotalAmount());
-                            stayService.printInvoice(outInvoice.getInvoiceId());
-                        }
+                            //xuat hoa down PDF
+                            com.hotel.dao.impl.InvoiceDAOImpl invoiceDAO = new com.hotel.dao.impl.InvoiceDAOImpl();
+                            boolean isSaved = invoiceDAO.insert(outInvoice);
+        
+                           if (isSaved) {
+                                System.out.println("[CSDL] Đã lưu hóa đơn thành công.");
+                                System.out.println("Đang khởi tạo hóa đơn PDF...");
+                                paymentService.printInvoiceToFile(outInvoice);
+                            } else {
+                                System.err.println("[LỖI] Không thể lưu hóa đơn vào CSDL. Vui lòng kiểm tra kết nối!");
+                            }
+                        } else {
+                                System.out.println("Không tìm thấy thông tin thuê phòng cho mã phòng này");
+                            }
                         break;
 
                     case "5":
