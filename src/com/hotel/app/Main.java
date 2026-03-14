@@ -18,7 +18,6 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-<<<<<<< HEAD
 //    System.out.println("\n--- ĐANG CHẠY CHẾ ĐỘ TEST HÓA ĐƠN ---");
 //    System.out.println("\n--- ĐANG KHỞI TẠO HÓA ĐƠN TEST CÓ DỊCH VỤ ---");
 //    PaymentServiceImpl paymentService = new PaymentServiceImpl();
@@ -45,7 +44,6 @@ public class Main {
 //    System.out.println("--- KẾT THÚC TEST. Vui lòng kiểm tra file trong thư mục dự án ---");
 //    
         
-=======
        // 1. Giả lập một hóa đơn
    Invoice testInvoice = new Invoice();
    testInvoice.setInvoiceId("HD001");
@@ -59,7 +57,6 @@ public class Main {
    paymentService.printInvoiceToFile(testInvoice);
    //
    System.out.println("Hãy kiểm tra thư mục dự án để xem file PDF!");
->>>>>>> a59d3169ab74cd8fad831794a31e7925a79de454
         // 1. Kiểm tra kết nối CSDL
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
