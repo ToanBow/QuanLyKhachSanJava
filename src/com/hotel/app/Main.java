@@ -10,6 +10,8 @@ import com.hotel.service.impl.ReportServiceImpl;
 import com.hotel.service.impl.RoomServiceImpl;
 import com.hotel.service.impl.StayServiceImpl;
 import com.hotel.util.DBConnection;
+import com.hotel.util.EmailReportUtil;
+import com.hotel.util.PdfReportUtil;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -168,18 +170,54 @@ public class Main {
                         break;
 
                     case "5":
+
                         System.out.println("\n[BÁO CÁO THỐNG KÊ]");
+
                         int month = LocalDate.now().getMonthValue();
                         int year = LocalDate.now().getYear();
-                        
+
                         double revenue = reportService.calculateRevenue(month, year);
                         double occupancy = reportService.getOccupancyRate();
 
                         System.out.printf("Kỳ báo cáo: %d/%d\n", month, year);
                         System.out.printf("Doanh thu: %,.0f VND\n", revenue);
                         System.out.printf("Tỷ lệ lấp đầy: %.2f%%\n", occupancy);
-                        break;
 
+                        java.io.File folder = new java.io.File("reports");
+                        if (!folder.exists()) {
+                            folder.mkdirs();
+                        }
+
+                        String pdfPath = PdfReportUtil.createReport(revenue, occupancy);
+
+                        if (pdfPath == null) {
+                            System.out.println("[ERROR] Không thể tạo file PDF.");
+                            break;
+                        }
+
+                        java.io.File pdfFile = new java.io.File(pdfPath);
+
+                        if (!pdfFile.exists()) {
+                            System.out.println("[ERROR] File PDF không tồn tại: " + pdfPath);
+                            break;
+                        }
+
+                        System.out.print("Nhập email nhận báo cáo: ");
+                        String emailTo = sc.nextLine().trim();
+
+                        if (emailTo.isEmpty() || !emailTo.contains("@")) {
+                            System.out.println("[ERROR] Email không hợp lệ.");
+                            break;
+                        }
+
+                        try {
+                            EmailReportUtil.sendReport(emailTo, pdfPath);
+                            System.out.println("[INFO] Gửi báo cáo thành công!");
+                        } catch (Exception e) {
+                            System.out.println("[ERROR] Không thể gửi email: " + e.getMessage());
+                        }
+
+                        break;
                     case "0":
                         System.out.println("Kết thúc phiên làm việc.");
                         isRunning = false;
