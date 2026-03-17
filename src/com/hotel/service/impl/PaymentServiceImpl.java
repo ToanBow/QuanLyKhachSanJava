@@ -80,13 +80,14 @@ public class PaymentServiceImpl implements IPaymentService {
             document = new Document(pdf);
             //chen logo
             try {
-            String logoPath = "C:\\Users\\DELL\\Documents\\NetBeansProjects\\QuanLyKhachSanJava\\logo\\logo.jpg";
-            Image logo = new Image(ImageDataFactory.create(logoPath));
-            logo.setWidth(80); 
-            logo.setFixedPosition(40, 750); 
-            document.add(logo);
+                // SỬ DỤNG ĐƯỜNG DẪN TƯƠNG ĐỐI
+                String logoPath = "logo/logo.jpg"; // Thư mục logo nằm ngang hàng với src
+                Image logo = new Image(ImageDataFactory.create(logoPath));
+                logo.setWidth(80); 
+                logo.setFixedPosition(40, 750); 
+                document.add(logo);
             } catch (Exception e) {
-                System.err.println("Khong tim thay logo tai duong dan: " + e.getMessage());
+                System.err.println("Không tìm thấy logo tại đường dẫn: " + e.getMessage());
             }
             //tieu de
             document.add(new Paragraph("KHACH SAN ANH TRANG").setBold().setFontSize(18).setMarginLeft(100));

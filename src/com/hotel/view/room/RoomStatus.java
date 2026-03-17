@@ -2,9 +2,10 @@ package com.hotel.view.room;
 
 public enum RoomStatus {
 
-    AVAILABLE("Trống"),
+    AVAILABLE("Sẵn sàng"),
     OCCUPIED("Có khách"),
-    CLEANING("Đang dọn");
+    CLEANING("Chưa dọn"),
+    MAINTENANCE("Đang sửa chữa"); // Bổ sung trạng thái này
 
     private final String text;
 

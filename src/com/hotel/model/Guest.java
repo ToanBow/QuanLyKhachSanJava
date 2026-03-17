@@ -12,7 +12,7 @@ public class Guest {
     private String nationality;  // Quốc tịch
     private String rank;         // Bạc, Vàng, Kim cương
     private boolean blacklist;
-    public Guest(String guestId, String name, String email, String phone, String cccd) {
+    public Guest(String cccd, String name, String email, String phone) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -21,7 +21,7 @@ public class Guest {
     public Date getBirthDate() {
         return birthDate;
     }
-
+    public Guest() {}
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }

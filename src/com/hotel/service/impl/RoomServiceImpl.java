@@ -31,6 +31,13 @@ public class RoomServiceImpl implements IRoomService {
     @Override
     public void confirmCleaningStatus(String roomId) {
         // Xác nhận dọn xong để đưa phòng về trạng thái "Sẵn sàng" 
-         roomDAO.updateStatus(roomId,"Sẵn sàng");
+        roomDAO.updateStatus(roomId, "Sẵn sàng");
+    }
+    public int countAll() {
+        return roomDAO.countAll();
+    }
+
+    public int countOccupied() {
+        return roomDAO.countOccupied();
     }
 }

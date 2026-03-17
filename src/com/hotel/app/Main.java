@@ -119,7 +119,7 @@ public class Main {
                         System.out.print("Hình thức thuê (Theo ngày/Theo giờ): "); String rentalType = sc.nextLine().trim();
                         System.out.print("Tiền cọc (VND): "); double deposit = Double.parseDouble(sc.nextLine().trim());
 
-                        Guest guest = new Guest(null, name, email, phone, cccd);
+                        Guest guest = new Guest(null, name, email, phone);
                         Invoice invoice = new Invoice();
                         invoice.setRentalType(rentalType);
                         invoice.setDeposit(deposit);

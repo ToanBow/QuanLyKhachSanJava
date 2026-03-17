@@ -21,7 +21,6 @@ public class GuestDAOImpl implements IGuestDAO {
                 if (rs.next()) {
                     // Sử dụng constructor hiện có trong model Guest
                     Guest guest = new Guest(
-                            null, // guestId không có trong bảng guests
                             rs.getString("name"),
                             rs.getString("email"),
                             rs.getString("phone"),
@@ -107,7 +106,6 @@ public class GuestDAOImpl implements IGuestDAO {
             
             while (rs.next()) {
                 Guest guest = new Guest(
-                        null,
                         rs.getString("name"),
                         rs.getString("email"),
                         rs.getString("phone"),

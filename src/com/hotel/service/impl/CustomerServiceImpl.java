@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerServiceImpl implements ICustomerService {
 
@@ -78,17 +80,46 @@ public class CustomerServiceImpl implements ICustomerService {
         return guest;
     }
 
-    public void addCustomer(Guest guest) {
-        // Kiểm tra tính toàn vẹn dữ liệu trước khi thêm mới (Tránh Duplicate Entry Exception)
-        if (guestDAO.findByCccd(guest.getCccd()) == null) {
-            boolean isSuccess = guestDAO.insert(guest);
-            if (isSuccess) {
-                System.out.println("Lưu trữ hồ sơ thành công: " + guest.getName());
-            } else {
-                System.err.println("Lỗi thao tác CSDL khi lưu hồ sơ khách.");
+    public java.util.List<Guest> getAllCustomers() {
+        java.util.List<Guest> list = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM guests ORDER BY name ASC";
+        
+        try (java.sql.Connection conn = com.hotel.util.DBConnection.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+             java.sql.ResultSet rs = ps.executeQuery()) {
+             
+            while (rs.next()) {
+                // SỬ DỤNG SETTER ĐỂ CHỐNG LƯU NGƯỢC DỮ LIỆU
+                Guest g = new Guest(); 
+                g.setCccd(rs.getString("cccd"));
+                g.setName(rs.getString("name"));
+                g.setPhone(rs.getString("phone"));
+                g.setEmail(rs.getString("email"));
+                g.setGender(rs.getString("gender"));
+                g.setNationality(rs.getString("nationality"));
+                g.setRank(rs.getString("rank"));
+                list.add(g);
             }
-        } else {
-            System.out.println("Khách hàng với định danh " + guest.getCccd() + " đã tồn tại trong hệ thống.");
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public void addCustomer(Guest guest) {
+        // Dùng UPSERT: Nếu chưa có thì Thêm, nếu CCCD đã tồn tại thì Sửa
+        String sql = "INSERT INTO guests (cccd, name, phone, email) VALUES (?, ?, ?, ?) " +
+                     "ON DUPLICATE KEY UPDATE name=VALUES(name), phone=VALUES(phone), email=VALUES(email)";
+        try (java.sql.Connection conn = com.hotel.util.DBConnection.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, guest.getCccd());
+            ps.setString(2, guest.getName());
+            ps.setString(3, guest.getPhone());
+            ps.setString(4, guest.getEmail());
+            ps.executeUpdate();
+            System.out.println("Thao tác dữ liệu khách hàng thành công!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

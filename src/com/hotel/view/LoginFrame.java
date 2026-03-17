@@ -3,6 +3,7 @@ package com.hotel.view;
 import com.hotel.model.User;
 import com.hotel.service.IAuthService;
 import com.hotel.service.impl.AuthServiceImpl;
+import com.hotel.view.dashboard.MainDashboard;
 import com.hotel.app.Main;
 
 import javax.swing.*;
@@ -126,7 +127,9 @@ public class LoginFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, "Đăng nhập thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
                 // Kích hoạt luồng Main
-                new Thread(() -> Main.main(new String[0])).start();
+                SwingUtilities.invokeLater(() -> {
+                    new MainDashboard().setVisible(true);
+                });
             } else {
                 JOptionPane.showMessageDialog(this, "Sai tài khoản hoặc mật khẩu!", "Lỗi Đăng Nhập", JOptionPane.ERROR_MESSAGE);
             }

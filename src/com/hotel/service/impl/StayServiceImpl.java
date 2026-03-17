@@ -181,122 +181,64 @@ public class StayServiceImpl implements IStayService {
     }
     @Override
     public Invoice processCheckOut(String roomId) {
-        // 1. Lấy thông tin hóa đơn đang Active (chưa check-out)
         Invoice invoice = invoiceDAO.findActiveInvoiceByRoom(roomId);
-        if (invoice == null) {
-            System.err.println("Lỗi: Không tìm thấy hóa đơn đang hoạt động cho phòng " + roomId);
-            return null;
-        }
+        if (invoice == null) return null;
 
-        // 2. Lấy thông tin phòng để đối chiếu giá
         Room room = roomDAO.findByRoomId(roomId);
-        if (room == null) {
-            System.err.println("Lỗi: Không tìm thấy thông tin phòng " + roomId);
-            return null;
-        }
+        if (room == null) return null;
 
-        // 3. Chốt giờ Check-out
         invoice.setCheckOutTime(LocalDateTime.now());
-
-        // 4. Tính toán thời gian lưu trú
-        Duration duration = Duration.between(invoice.getCheckInTime(), invoice.getCheckOutTime());
-        long totalMinutes = duration.toMinutes();
+        
+        long totalMinutes = 0;
+        if (invoice.getCheckInTime() != null) {
+            totalMinutes = Duration.between(invoice.getCheckInTime(), invoice.getCheckOutTime()).toMinutes();
+        }
+        
         long hours = totalMinutes / 60;
-        
-        // Khách sạn thường có biên độ du di (VD: Lố 15 phút tính tròn 1 giờ)
-        if (totalMinutes % 60 > 15) {
-            hours++;
-        }
-        if (hours == 0) hours = 1; // Mặc định ở tối thiểu 1 giờ
+        if (totalMinutes % 60 > 15) hours++;
+        if (hours == 0) hours = 1;
 
-        // 5. Tính giá tiền phòng linh hoạt (roomCost)
-        double roomCost = 0;
-        if ("Theo ngày".equalsIgnoreCase(invoice.getRentalType())) {
-            long days = hours / 24;
-            // Nếu ở qua số giờ quy định của ngày tiếp theo (VD: lố 4 giờ) thì làm tròn thành thêm 1 ngày
-            if (hours % 24 >= 4) {
-                days++;
-            }
-            if (days == 0) days = 1; // Tối thiểu 1 ngày
-            roomCost = days * room.getDailyPrice();
-        } else {
-            // Tính theo giờ
-            roomCost = hours * room.getHourlyPrice();
-        }
+        double roomCost = ("Theo ngày".equalsIgnoreCase(invoice.getRentalType())) 
+            ? Math.max(1, hours / 24 + (hours % 24 >= 4 ? 1 : 0)) * room.getDailyPrice() 
+            : hours * room.getHourlyPrice();
 
-        // 6. Gọi hàm tính toán tổng tiền có sẵn trong model Invoice
-        // Hàm này sẽ tự động cộng roomCost, early/late Surcharge, trừ Deposit và Discount
-        invoice.calculateActualAmount(roomCost);
-        
-        invoice.setStatus("PAID");
-        // Giả định phương thức thanh toán, thực tế có thể truyền qua tham số hàm
-        if (invoice.getPaymentMethod() == null) {
-            invoice.setPaymentMethod("Tiền mặt"); 
+    invoice.calculateActualAmount(roomCost);
+    invoice.setStatus("PAID");
+    invoice.setPaymentMethod("Tiền mặt");
+
+    Connection conn = null;
+    try {
+        conn = DBConnection.getConnection();
+        conn.setAutoCommit(false);
+
+        // 1. Chốt hóa đơn
+        String sqlUpdateInvoice = "UPDATE invoices SET check_out_time = ?, total_amount = ?, status = ?, payment_method = ? WHERE invoice_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sqlUpdateInvoice)) {
+            ps.setTimestamp(1, java.sql.Timestamp.valueOf(invoice.getCheckOutTime()));
+            ps.setDouble(2, invoice.getTotalAmount());
+            ps.setString(3, invoice.getStatus());
+            ps.setString(4, invoice.getPaymentMethod());
+            ps.setString(5, invoice.getInvoiceId());
+            ps.executeUpdate();
         }
 
-        // 7. Thực hiện Database Transaction để đảm bảo tính ACID
-        Connection conn = null;
-        try {
-            conn = DBConnection.getConnection();
-            conn.setAutoCommit(false);
-
-            // Cập nhật Hóa Đơn (Đã có invoice_id từ lúc check-in)
-            String sqlUpdateInvoice = "UPDATE invoices SET check_out_time = ?, total_amount = ?, status = ?, payment_method = ? WHERE invoice_id = ?";
-            try (PreparedStatement psInvoice = conn.prepareStatement(sqlUpdateInvoice)) {
-                psInvoice.setTimestamp(1, java.sql.Timestamp.valueOf(invoice.getCheckOutTime()));
-                psInvoice.setDouble(2, invoice.getTotalAmount());
-                psInvoice.setString(3, invoice.getStatus());
-                psInvoice.setString(4, invoice.getPaymentMethod());
-                psInvoice.setString(5, invoice.getInvoiceId());
-                psInvoice.executeUpdate();
-            }
-
-            // Đổi trạng thái Phòng sang "Chưa dọn"
-            String sqlUpdateRoom = "UPDATE rooms SET status = 'Chưa dọn' WHERE room_id = ?";
-            try (PreparedStatement psRoom = conn.prepareStatement(sqlUpdateRoom)) {
-                psRoom.setString(1, roomId);
-                psRoom.executeUpdate();
-            }
-
-            // Trừ kho Dịch vụ nếu có sử dụng
-            if (invoice.getServices() != null && !invoice.getServices().isEmpty()) {
-                String sqlUpdateInventory = "UPDATE services SET inventory = inventory - ? WHERE service_id = ?";
-                try (PreparedStatement psInventory = conn.prepareStatement(sqlUpdateInventory)) {
-                    for (ServiceUsage usage : invoice.getServices()) {
-                        psInventory.setInt(1, usage.getQuantity());
-                        psInventory.setString(2, usage.getServiceId());
-                        psInventory.addBatch();
-                    }
-                    psInventory.executeBatch();
-                }
-            }
-
-            conn.commit();
-            System.out.println("Check-out thành công. Hóa đơn cập nhật hoàn tất!");
-
-        } catch (Exception e) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                    System.err.println("Giao dịch Check-out thất bại, đã Rollback dữ liệu!");
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            e.printStackTrace();
-            return null;
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+        // 2. Chuyển trạng thái phòng sang chờ dọn dẹp
+        String sqlUpdateRoom = "UPDATE rooms SET status = 'Chưa dọn' WHERE room_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sqlUpdateRoom)) {
+            ps.setString(1, roomId);
+            ps.executeUpdate();
         }
+
+        conn.commit();
         return invoice;
+    } catch (Exception e) {
+        if (conn != null) try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+        e.printStackTrace();
+        return null;
+    } finally {
+        if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ex) { ex.printStackTrace(); }
     }
+}
 
     @Override
     
@@ -342,7 +284,4 @@ public class StayServiceImpl implements IStayService {
         }
     }
 
-    public void checkIn(String guestId, String roomId) {
-
-    }
 }

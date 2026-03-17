@@ -1,120 +1,163 @@
 package com.hotel.view.room;
 
+import com.hotel.model.Room;
+import com.hotel.service.IRoomService;
+import com.hotel.service.IStayService;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class RoomMapPanel extends JPanel {
 
     private JPanel floorsPanel;
     private JComboBox<String> filterBox;
-
     private List<RoomCard> allRooms = new ArrayList<>();
 
-    public RoomMapPanel(){
+    // Tích hợp Service
+    private IRoomService roomService;
+    private IStayService stayService;
+
+    public RoomMapPanel(IRoomService roomService, IStayService stayService) {
+        this.roomService = roomService;
+        this.stayService = stayService;
 
         setLayout(new BorderLayout());
-        setBackground(new Color(245,247,250));
+        setBackground(new Color(245, 247, 250));
 
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
-        header.setBorder(new EmptyBorder(15,20,10,20));
+        header.setBorder(new EmptyBorder(15, 20, 10, 20));
 
         JLabel title = new JLabel("Sơ đồ phòng");
-        title.setFont(new Font("Segoe UI",Font.BOLD,22));
+        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
 
-        String[] filters = {"Tất cả","Trống","Có khách","Đang dọn"};
+        // Cập nhật bộ lọc theo đúng các trạng thái trong CSDL
+        String[] filters = {"Tất cả", "Sẵn sàng", "Có khách", "Chưa dọn", "Đang sửa chữa"};
         filterBox = new JComboBox<>(filters);
+        filterBox.addActionListener(e -> applyFilter());
 
-        filterBox.addActionListener(e->applyFilter());
-
-        header.add(title,BorderLayout.WEST);
-        header.add(filterBox,BorderLayout.EAST);
-
-        add(header,BorderLayout.NORTH);
+        header.add(title, BorderLayout.WEST);
+        header.add(filterBox, BorderLayout.EAST);
+        add(header, BorderLayout.NORTH);
 
         floorsPanel = new JPanel();
-        floorsPanel.setLayout(new BoxLayout(floorsPanel,BoxLayout.Y_AXIS));
-        floorsPanel.setBackground(new Color(245,247,250));
-        floorsPanel.setBorder(new EmptyBorder(10,20,20,20));
-
-        floorsPanel.add(createFloor("Tầng 1",101));
-        floorsPanel.add(createFloor("Tầng 2",201));
-        floorsPanel.add(createFloor("Tầng 3",301));
+        floorsPanel.setLayout(new BoxLayout(floorsPanel, BoxLayout.Y_AXIS));
+        floorsPanel.setBackground(new Color(245, 247, 250));
+        floorsPanel.setBorder(new EmptyBorder(10, 20, 20, 20));
 
         JScrollPane scroll = new JScrollPane(floorsPanel);
         scroll.setBorder(null);
+        add(scroll, BorderLayout.CENTER);
 
-        add(scroll,BorderLayout.CENTER);
+        // Khởi chạy nạp dữ liệu từ CSDL
+        loadRoomsData();
     }
 
-    private JPanel createFloor(String floorName,int startRoom){
+    public void loadRoomsData() {
+        floorsPanel.removeAll();
+        allRooms.clear();
 
-        JPanel container = new JPanel(new BorderLayout());
-        container.setOpaque(false);
-        container.setBorder(new EmptyBorder(10,0,25,0));
-
-        JLabel label = new JLabel(floorName);
-        label.setFont(new Font("Segoe UI",Font.BOLD,18));
-
-        container.add(label,BorderLayout.NORTH);
-
-        JPanel grid = new JPanel(new GridLayout(1,5,20,20));
-        grid.setOpaque(false);
-
-        for(int i=0;i<5;i++){
-
-            int roomNum = startRoom + i;
-
-            RoomStatus status = randomStatus();
-
-            RoomCard card = new RoomCard(
-                    "Phòng "+roomNum,
-                    "Deluxe",
-                    status
-            );
-
-            allRooms.add(card);
-
-            grid.add(card);
+        // 1. Lấy dữ liệu thật từ DB thông qua Service
+        List<Room> rooms = roomService.getRoomMap(); 
+        if (rooms == null || rooms.isEmpty()) {
+            floorsPanel.add(new JLabel("Chưa có dữ liệu phòng trong cơ sở dữ liệu."));
+            return;
         }
 
-        container.add(grid,BorderLayout.CENTER);
+        // 2. Nhóm các phòng theo tầng (Sử dụng TreeMap để tự động sắp xếp Tầng 1 -> Tầng N)
+        Map<Integer, List<Room>> roomsByFloor = new TreeMap<>();
+        for (Room r : rooms) {
+            roomsByFloor.computeIfAbsent(r.getFloor(), k -> new ArrayList<>()).add(r);
+        }
 
-        return container;
-    }
-
-    private RoomStatus randomStatus(){
-
-        RoomStatus[] arr = RoomStatus.values();
-
-        return arr[(int)(Math.random()*arr.length)];
-    }
-
-    private void applyFilter(){
-
-        String selected = (String) filterBox.getSelectedItem();
-
-        for(RoomCard card : allRooms){
-
-            if(selected.equals("Tất cả")){
-
-                card.setVisible(true);
-                continue;
-            }
-
-            if(card.getStatus().getText().equals(selected)){
-                card.setVisible(true);
-            }else{
-                card.setVisible(false);
-            }
+        // 3. Render từng tầng ra giao diện
+        for (Map.Entry<Integer, List<Room>> entry : roomsByFloor.entrySet()) {
+            floorsPanel.add(createFloor("Tầng " + entry.getKey(), entry.getValue()));
         }
 
         revalidate();
         repaint();
     }
 
-    
+    private JPanel createFloor(String floorName, List<Room> roomsInFloor) {
+        JPanel container = new JPanel(new BorderLayout());
+        container.setOpaque(false);
+        container.setBorder(new EmptyBorder(10, 0, 25, 0));
+
+        JLabel label = new JLabel(floorName);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        container.add(label, BorderLayout.NORTH);
+
+        // Lưới hiển thị linh hoạt, tự động xuống dòng nếu vượt quá 5 phòng
+        JPanel grid = new JPanel(new GridLayout(0, 5, 20, 20));
+        grid.setOpaque(false);
+
+        for (Room r : roomsInFloor) {
+            // Nạp dữ liệu thực vào RoomCard
+            RoomCard card = new RoomCard(
+                    "Phòng " + r.getRoomId(),
+                    r.getType(),
+                    mapStatus(r.getStatus()) 
+            );
+
+            // Thêm sự kiện Click để thực hiện Check-in / Check-out
+            card.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(RoomMapPanel.this);
+                    
+                    // Mở Dialog chi tiết phòng (Truyền StayService để gọi logic Check-in/out)
+                    RoomDetailDialog dialog = new RoomDetailDialog(parentFrame, r, stayService);
+                    dialog.setVisible(true);
+                    
+                    // Tải lại sơ đồ phòng sau khi đóng Dialog để cập nhật trạng thái mới nhất
+                    loadRoomsData();
+                }
+            });
+
+            allRooms.add(card);
+            grid.add(card);
+        }
+
+        container.add(grid, BorderLayout.CENTER);
+        return container;
+    }
+
+    // Ánh xạ trạng thái chuỗi trong MySQL sang Enum của giao diện
+    private RoomStatus mapStatus(String dbStatus) {
+        if (dbStatus == null) return RoomStatus.AVAILABLE; 
+        switch (dbStatus) {
+            case "Sẵn sàng": return RoomStatus.AVAILABLE;
+            case "Có khách": return RoomStatus.OCCUPIED;
+            case "Chưa dọn": return RoomStatus.CLEANING;
+            case "Đang sửa chữa": return RoomStatus.MAINTENANCE;
+            default: return RoomStatus.AVAILABLE;
+        }
+    }
+
+    private void applyFilter() {
+        String selected = (String) filterBox.getSelectedItem();
+
+        for (RoomCard card : allRooms) {
+            if ("Tất cả".equals(selected)) {
+                card.setVisible(true);
+                continue;
+            }
+
+            if (card.getStatus().getText().equalsIgnoreCase(selected)) {
+                card.setVisible(true);
+            } else {
+                card.setVisible(false);
+            }
+        }
+        revalidate();
+        repaint();
+    }
 }

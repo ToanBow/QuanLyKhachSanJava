@@ -59,7 +59,14 @@ public class InvoiceDAOImpl implements IInvoiceDAO {
             ps.setString(2, invoice.getRoomId());
             ps.setString(3, invoice.getGuestCccd());
             ps.setTimestamp(4, java.sql.Timestamp.valueOf(invoice.getCheckInTime()));
-            ps.setTimestamp(5, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now())); // Check-out lúc này
+            
+            // SỬA LỖI Ở ĐÂY: Kiểm tra null cho giờ Check-out
+            if (invoice.getCheckOutTime() != null) {
+                ps.setTimestamp(5, java.sql.Timestamp.valueOf(invoice.getCheckOutTime()));
+            } else {
+                ps.setNull(5, java.sql.Types.TIMESTAMP);
+            }
+            
             ps.setString(6, invoice.getRentalType());
             ps.setDouble(7, invoice.getDeposit());
             ps.setDouble(8, invoice.getEarlySurcharge());

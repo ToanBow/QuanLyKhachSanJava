@@ -13,7 +13,7 @@ public class RoomCard extends JPanel {
     private String type;
     private RoomStatus status;
 
-    public RoomCard(String roomName,String type,RoomStatus status){
+    public RoomCard(String roomName, String type, RoomStatus status){
 
         this.roomName = roomName;
         this.type = type;
@@ -48,90 +48,70 @@ public class RoomCard extends JPanel {
 
         add(content,BorderLayout.CENTER);
 
+        // Chỉ giữ lại hiệu ứng Hover (Đổi màu khi di chuột)
+        // ĐÃ XÓA MOUSE_CLICKED VÌ LOGIC NÀY ĐÃ ĐƯỢC XỬ LÝ BÊN ROOM MAPPANEL
         addMouseListener(new MouseAdapter(){
-
             public void mouseEntered(MouseEvent e){
                 hover=true;
                 repaint();
             }
-
             public void mouseExited(MouseEvent e){
                 hover=false;
                 repaint();
-            }
-
-            public void mouseClicked(MouseEvent e){
-
-                RoomDetailDialog dialog =
-                        new RoomDetailDialog(
-                                SwingUtilities.getWindowAncestor(RoomCard.this),
-                                roomName,
-                                type,
-                                status
-                        );
-
-                dialog.setVisible(true);
             }
         });
     }
 
     private Color getStatusColor(){
-
         switch(status){
-
             case AVAILABLE:
-                return new Color(232,245,233);
-
+                return new Color(232,245,233); // Xanh lá nhạt
             case OCCUPIED:
-                return new Color(255,235,238);
-
+                return new Color(255,235,238); // Đỏ nhạt
             case CLEANING:
-                return new Color(255,248,225);
+                return new Color(255,248,225); // Vàng nhạt
+            case MAINTENANCE:
+                return new Color(236,239,241); // Xám nhạt
         }
-
         return Color.WHITE;
     }
 
     private Color getStatusIconColor(){
-
         switch(status){
-
             case AVAILABLE:
-                return new Color(56,142,60);
-
+                return new Color(56,142,60); // Xanh lá đậm
             case OCCUPIED:
-                return new Color(211,47,47);
-
+                return new Color(211,47,47); // Đỏ đậm
             case CLEANING:
-                return new Color(255,152,0);
+                return new Color(255,152,0); // Cam
+            case MAINTENANCE:
+                return new Color(96,125,139); // Xám xanh
         }
-
         return Color.GRAY;
     }
 
+    @Override
     protected void paintComponent(Graphics g){
-
         Graphics2D g2 = (Graphics2D) g.create();
-
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         int w = getWidth();
         int h = getHeight();
+        int y = hover ? -6 : 0; // Hiệu ứng nảy lên khi hover
 
-        int y = hover ? -6 : 0;
-
+        // Đổ bóng
         g2.setColor(new Color(0,0,0,35));
         g2.fillRoundRect(6,8,w-12,h-12,18,18);
 
+        // Màu nền Card
         g2.setColor(getStatusColor());
         g2.fillRoundRect(0,y,w-12,h-12,18,18);
 
+        // Chấm tròn trạng thái
         g2.setColor(getStatusIconColor());
-        g2.fillOval(w-30,10,12,12);
+        g2.fillOval(w-30, 10 + y, 12, 12);
 
         g2.dispose();
-
         super.paintComponent(g);
     }
 
