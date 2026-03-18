@@ -38,14 +38,30 @@ public class RoomMapPanel extends JPanel {
         JLabel title = new JLabel("Sơ đồ phòng");
         title.setFont(new Font("Segoe UI", Font.BOLD, 22));
 
+        // ---------------- THÊM NÚT LÀM MỚI VÀ BỘ LỌC ----------------
+        JPanel rightControls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        rightControls.setOpaque(false);
+
+        // Nút Làm mới
+        JButton btnReload = new JButton("Làm mới");
+        btnReload.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnReload.setBackground(new Color(238, 238, 238));
+        btnReload.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnReload.addActionListener(e -> loadRoomsData());
+
         // Cập nhật bộ lọc theo đúng các trạng thái trong CSDL
         String[] filters = {"Tất cả", "Sẵn sàng", "Có khách", "Chưa dọn", "Đang sửa chữa"};
         filterBox = new JComboBox<>(filters);
+        filterBox.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         filterBox.addActionListener(e -> applyFilter());
 
+        rightControls.add(btnReload);
+        rightControls.add(filterBox);
+
         header.add(title, BorderLayout.WEST);
-        header.add(filterBox, BorderLayout.EAST);
+        header.add(rightControls, BorderLayout.EAST);
         add(header, BorderLayout.NORTH);
+        // -------------------------------------------------------------
 
         floorsPanel = new JPanel();
         floorsPanel.setLayout(new BoxLayout(floorsPanel, BoxLayout.Y_AXIS));
@@ -68,6 +84,8 @@ public class RoomMapPanel extends JPanel {
         List<Room> rooms = roomService.getRoomMap(); 
         if (rooms == null || rooms.isEmpty()) {
             floorsPanel.add(new JLabel("Chưa có dữ liệu phòng trong cơ sở dữ liệu."));
+            revalidate();
+            repaint();
             return;
         }
 
@@ -82,8 +100,8 @@ public class RoomMapPanel extends JPanel {
             floorsPanel.add(createFloor("Tầng " + entry.getKey(), entry.getValue()));
         }
 
-        revalidate();
-        repaint();
+        // Áp dụng lại bộ lọc hiện tại sau khi reload để giao diện không bị giật
+        applyFilter();
     }
 
     private JPanel createFloor(String floorName, List<Room> roomsInFloor) {

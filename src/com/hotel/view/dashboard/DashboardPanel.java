@@ -37,6 +37,15 @@ public class DashboardPanel extends JPanel {
         JLabel title = new JLabel("Tổng quan Hệ thống (Tháng " + LocalDate.now().getMonthValue() + ")");
         title.setFont(new Font("Segoe UI", Font.BOLD, 20));
         panel.add(title, BorderLayout.WEST);
+        
+        // Thêm nút Làm mới
+        JButton btnReload = new JButton("Làm mới Dữ liệu");
+        btnReload.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnReload.setBackground(new Color(238, 238, 238));
+        btnReload.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnReload.addActionListener(e -> refreshDashboard());
+        
+        panel.add(btnReload, BorderLayout.EAST);
 
         return panel;
     }
@@ -96,15 +105,15 @@ public class DashboardPanel extends JPanel {
         // Chuẩn bị dữ liệu động
         double[] revData = new double[6];
         String[] labels = new String[6];
-        
+
         LocalDate now = LocalDate.now();
-        
+
         // Vòng lặp lùi về 6 tháng trước
         for (int i = 5; i >= 0; i--) {
             LocalDate targetMonth = now.minusMonths(i);
             int m = targetMonth.getMonthValue();
             int y = targetMonth.getYear();
-            
+
             labels[5 - i] = "Tháng " + m; // Tạo nhãn (VD: Tháng 10)
             revData[5 - i] = reportService.calculateRevenue(m, y); // Gọi DAO truy xuất tiền
         }
@@ -118,8 +127,7 @@ public class DashboardPanel extends JPanel {
         cardWrapper.setBackground(Color.WHITE);
         cardWrapper.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(224, 224, 224), 1),
-                new EmptyBorder(20, 20, 20, 20)
-        ));
+                new EmptyBorder(20, 20, 20, 20)));
         cardWrapper.add(chartContainer, BorderLayout.CENTER);
 
         // Wrapper phụ để giới hạn chiều cao biểu đồ không bị kéo giãn quá mức
@@ -129,5 +137,12 @@ public class DashboardPanel extends JPanel {
         marginPanel.add(cardWrapper, BorderLayout.CENTER);
 
         return marginPanel;
+    }
+    private void refreshDashboard() {
+        removeAll(); // Xóa toàn bộ UI cũ
+        add(createHeader(), BorderLayout.NORTH);
+        add(createCenter(), BorderLayout.CENTER); // Hàm này tự động gọi DAO lấy dữ liệu mới nhất
+        revalidate();
+        repaint();
     }
 }

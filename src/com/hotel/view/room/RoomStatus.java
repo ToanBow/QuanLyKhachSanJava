@@ -5,7 +5,7 @@ public enum RoomStatus {
     AVAILABLE("Sẵn sàng"),
     OCCUPIED("Có khách"),
     CLEANING("Chưa dọn"),
-    MAINTENANCE("Đang sửa chữa"); // Bổ sung trạng thái này
+    MAINTENANCE("Đang sửa chữa");
 
     private final String text;
 

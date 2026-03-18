@@ -1,5 +1,7 @@
 package com.hotel.service;
 
+import com.hotel.model.Invoice;
+
 public interface IPaymentService {
     /**
    Quản lý phương thức: QR Code động, Thẻ tín dụng, Ví điện tử. [cite: 30]
@@ -15,4 +17,6 @@ public interface IPaymentService {
     Đối soát luồng tiền theo ca làm việc (Shift report) của nhân viên lễ tân. [cite: 32]
      */
     void generateShiftReport(String employeeId);
+
+    void printInvoiceToFile(Invoice invoice);
 }

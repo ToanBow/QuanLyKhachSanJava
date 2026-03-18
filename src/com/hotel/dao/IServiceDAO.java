@@ -4,12 +4,14 @@ import com.hotel.model.Service;
 import java.util.List;
 
 public interface IServiceDAO {
-    // Lấy danh sách các dịch vụ hiện có (Mini bar, Giặt là...) 
+    
+    // Lấy danh sách toàn bộ dịch vụ
     List<Service> getAllServices();
-
-    // Tìm dịch vụ theo ID để tính giá hoặc lấy thuế suất VAT
+    
+    // Tìm dịch vụ theo ID
     Service findById(String serviceId);
-
-    // Tự động trừ hoặc cộng kho khi dịch vụ được sử dụng hoặc nhập thêm
+    
+    // Hàm cập nhật tồn kho 
     boolean updateInventory(String serviceId, int quantityChange);
+    
 }

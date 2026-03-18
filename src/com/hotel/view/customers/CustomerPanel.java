@@ -14,10 +14,9 @@ public class CustomerPanel extends JPanel {
     private JTable table;
     private DefaultTableModel model;
     private CustomerServiceImpl customerService;
+    private JTextField txtSearch;
 
-    // Bảng màu chuẩn
     private final Color PRIMARY_COLOR = new Color(26, 35, 126);
-    private final Color ACCENT_COLOR = new Color(46, 125, 50);
 
     public CustomerPanel(CustomerServiceImpl customerService) {
         this.customerService = customerService;
@@ -44,14 +43,18 @@ public class CustomerPanel extends JPanel {
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         searchPanel.setOpaque(false);
-        JTextField txtSearch = new JTextField();
+        txtSearch = new JTextField();
         txtSearch.setPreferredSize(new Dimension(250, 35));
-        txtSearch.putClientProperty("JTextField.placeholderText", "Nhập CCCD hoặc Tên...");
         
         JButton btnSearch = new JButton("Tìm kiếm");
-        btnSearch.setBackground(PRIMARY_COLOR);
-        btnSearch.setForeground(Color.WHITE);
+        btnSearch.setBackground(new Color(224, 224, 224)); // Nền xám nhạt
+        btnSearch.setForeground(Color.BLACK); // CHỮ ĐEN
+        btnSearch.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnSearch.setFocusPainted(false);
+        btnSearch.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // KÍCH HOẠT SỰ KIỆN TÌM KIẾM
+        btnSearch.addActionListener(e -> searchCustomer());
 
         searchPanel.add(txtSearch);
         searchPanel.add(btnSearch);
@@ -90,33 +93,37 @@ public class CustomerPanel extends JPanel {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
         panel.setOpaque(false);
 
-        JButton btnReload = createStyledButton("Tải lại dữ liệu", Color.GRAY);
-        JButton btnAdd = createStyledButton("Thêm Khách Mới", ACCENT_COLOR);
-        JButton btnEdit = createStyledButton("Cập Nhật", new Color(251, 140, 0));
+        // Làm sáng màu nền của nút để chữ đen nổi bật hơn
+        JButton btnReload = createStyledButton("Tải lại dữ liệu", new Color(224, 224, 224)); 
+        JButton btnAdd = createStyledButton("Thêm Khách Mới", new Color(129, 199, 132)); 
+        JButton btnEdit = createStyledButton("Cập Nhật", new Color(255, 183, 77)); 
         
-        // Tải lại bảng
-        btnReload.addActionListener(e -> loadDataToTable());
+        // Sự kiện Tải lại bảng
+        btnReload.addActionListener(e -> {
+            txtSearch.setText("");
+            loadDataToTable();
+        });
 
-        // Thêm mới
+        // Sự kiện Thêm mới
         btnAdd.addActionListener(e -> openCustomerForm(null));
 
-        // Cập nhật thông tin
+        // Sự kiện Cập nhật thông tin
         btnEdit.addActionListener(e -> {
-        int row = table.getSelectedRow();
-        if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần chỉnh sửa.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        // Ép kiểu an toàn và chuẩn hóa chuỗi định danh
-        String cccd = String.valueOf(model.getValueAt(row, 1)).trim();
-        Guest guest = customerService.getCustomerProfile(cccd);
-    
-        if (guest != null) {
+            int row = table.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một khách hàng trong bảng để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // FIX LỖI ĐẢO DỮ LIỆU: Trích xuất trực tiếp từ lưới (Table) đang hiển thị chuẩn xác
+            Guest guest = new Guest();
+            guest.setCccd(String.valueOf(model.getValueAt(row, 1)).trim());
+            guest.setName(String.valueOf(model.getValueAt(row, 2)).trim());
+            guest.setPhone(String.valueOf(model.getValueAt(row, 3)).trim());
+            guest.setEmail(String.valueOf(model.getValueAt(row, 4)).trim());
+            
             openCustomerForm(guest);
-        } else {
-            JOptionPane.showMessageDialog(this, "Lỗi tính toàn vẹn dữ liệu: Không tìm thấy hồ sơ cho CCCD " + cccd, "Lỗi truy xuất", JOptionPane.ERROR_MESSAGE);
-        }
-    });
+        });
 
         panel.add(btnReload);
         panel.add(btnEdit);
@@ -128,7 +135,7 @@ public class CustomerPanel extends JPanel {
     private JButton createStyledButton(String text, Color color) {
         JButton btn = new JButton(text);
         btn.setBackground(color);
-        btn.setForeground(Color.WHITE);
+        btn.setForeground(Color.BLACK); // CHỮ MÀU ĐEN YÊU CẦU CỦA BẠN
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setFocusPainted(false);
         btn.setPreferredSize(new Dimension(150, 40));
@@ -150,6 +157,35 @@ public class CustomerPanel extends JPanel {
                     g.getEmail() != null ? g.getEmail() : "",
                     g.getRank() != null ? g.getRank() : "Bạc"
             });
+        }
+    }
+
+    // Xử lý Tìm Kiếm Khách Hàng
+    private void searchCustomer() {
+        String keyword = txtSearch.getText().trim().toLowerCase();
+        if (keyword.isEmpty()) {
+            loadDataToTable(); // Nếu ô tìm kiếm trống -> Hiện toàn bộ
+            return;
+        }
+
+        model.setRowCount(0); 
+        List<Guest> guests = customerService.getAllCustomers();
+        int stt = 1;
+        for (Guest g : guests) {
+            String cccd = g.getCccd() != null ? g.getCccd().toLowerCase() : "";
+            String name = g.getName() != null ? g.getName().toLowerCase() : "";
+            
+            // Tìm theo tên hoặc theo CCCD
+            if (cccd.contains(keyword) || name.contains(keyword)) {
+                model.addRow(new Object[]{
+                        stt++,
+                        g.getCccd(),
+                        g.getName(),
+                        g.getPhone(),
+                        g.getEmail() != null ? g.getEmail() : "",
+                        g.getRank() != null ? g.getRank() : "Bạc"
+                });
+            }
         }
     }
 
@@ -181,21 +217,25 @@ public class CustomerPanel extends JPanel {
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (option == JOptionPane.OK_OPTION) {
-                if (txtCccd.getText().trim().isEmpty() || txtName.getText().trim().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "CCCD và Họ Tên không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // FIX LỖI: Dùng Setters thay vì dùng new Guest(...)
-                Guest guest = new Guest();
-                guest.setCccd(txtCccd.getText().trim());
-                guest.setName(txtName.getText().trim());
-                guest.setPhone(txtPhone.getText().trim());
-                guest.setEmail(txtEmail.getText().trim());
-                
-                customerService.addCustomer(guest); 
-                JOptionPane.showMessageDialog(this, "Thao tác thành công!");
-                loadDataToTable(); 
+            String cccd = txtCccd.getText().trim();
+            String name = txtName.getText().trim();
+            
+            if (cccd.isEmpty() || name.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "CCCD và Họ Tên không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+            Guest guest = new Guest();
+            guest.setCccd(cccd);
+            guest.setName(name);
+            guest.setPhone(txtPhone.getText().trim());
+            guest.setEmail(txtEmail.getText().trim());
+            
+            // Gọi Service để lưu vào DB
+            customerService.addCustomer(guest); 
+            JOptionPane.showMessageDialog(this, "Thao tác thành công!");
+            
+            loadDataToTable(); // Refresh lại lưới
+        }
     }
 }
