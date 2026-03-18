@@ -99,7 +99,7 @@ public class InvoicePanel extends JPanel {
         JButton btnReload = new JButton("Làm mới");
         btnReload.setBackground(new Color(224, 224, 224)); btnReload.setForeground(Color.BLACK);
         
-        JButton btnPayDebt = new JButton("💰 Chốt thanh toán khoản nợ");
+        JButton btnPayDebt = new JButton("Chốt thanh toán khoản nợ");
         btnPayDebt.setBackground(new Color(255, 204, 128)); btnPayDebt.setForeground(Color.BLACK);
         btnPayDebt.setFont(new Font("Segoe UI", Font.BOLD, 14));
 

@@ -97,31 +97,31 @@ public class RoomDetailDialog extends JDialog {
         JPanel form = new JPanel(new GridLayout(0, 2, 10, 10));
         form.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        JTextField txtName = new JTextField();
         JTextField txtCccd = new JTextField();
-        JTextField txtPhone = new JTextField();
+        JTextField txtName = new JTextField();
         JComboBox<String> cbGender = new JComboBox<>(new String[]{"Nam", "Nữ", "Khác"});
         JTextField txtDob = new JTextField(); txtDob.setToolTipText("dd/MM/yyyy");
+        JTextField txtPhone = new JTextField();
+        JTextField txtEmail = new JTextField();
         JTextField txtHometown = new JTextField();
         JTextField txtNationality = new JTextField("Việt Nam");
-        JTextField txtEmail = new JTextField();
 
         JComboBox<String> cbRentalType = new JComboBox<>(new String[]{"Theo ngày", "Theo giờ"});
         JTextField txtDeposit = new JTextField("0");
         JTextField txtSurcharge = new JTextField("0");
         JTextField txtDiscount = new JTextField("0");
-        
-        // ĐÃ BỔ SUNG CHỨC NĂNG GHI NỢ NGAY TỪ LÚC CHECK-IN
         JComboBox<String> cbPayment = new JComboBox<>(new String[]{"Tiền mặt", "Chuyển khoản", "Thẻ tín dụng", "Nợ"});
 
-        form.add(new JLabel("Họ và tên (*):")); form.add(txtName);
+        // Gắn vào UI theo thứ tự cực kỳ chuẩn
         form.add(new JLabel("CCCD/Passport (*):")); form.add(txtCccd);
-        form.add(new JLabel("Số điện thoại:")); form.add(txtPhone);
+        form.add(new JLabel("Họ và tên (*):")); form.add(txtName);
         form.add(new JLabel("Giới tính:")); form.add(cbGender);
         form.add(new JLabel("Ngày sinh (dd/MM/yyyy):")); form.add(txtDob);
+        form.add(new JLabel("Số điện thoại:")); form.add(txtPhone);
+        form.add(new JLabel("Email:")); form.add(txtEmail);
         form.add(new JLabel("Quê quán:")); form.add(txtHometown);
         form.add(new JLabel("Quốc tịch:")); form.add(txtNationality);
-        form.add(new JLabel("Email:")); form.add(txtEmail);
+        
         form.add(new JLabel("--- THÔNG TIN THUÊ ---")); form.add(new JLabel(""));
         form.add(new JLabel("Hình thức thuê:")); form.add(cbRentalType);
         form.add(new JLabel("Tiền cọc trước (VNĐ):")); form.add(txtDeposit);
@@ -147,7 +147,6 @@ public class RoomDetailDialog extends JDialog {
                     JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ Tên và CCCD!"); return;
                 }
 
-                // Kiểm tra Blacklist
                 boolean isBlacklisted = false;
                 String blReason = "";
                 try (Connection conn = DBConnection.getConnection();
@@ -168,17 +167,16 @@ public class RoomDetailDialog extends JDialog {
                 }
 
                 Guest guest = new Guest();
-                guest.setName(nameCheck);
                 guest.setCccd(cccdCheck);
-                guest.setPhone(txtPhone.getText().trim());
-                guest.setEmail(txtEmail.getText().trim());
+                guest.setName(nameCheck);
                 guest.setGender(cbGender.getSelectedItem().toString());
-                guest.setHomeTown(txtHometown.getText().trim());
-                guest.setNationality(txtNationality.getText().trim());
-                
                 if (!txtDob.getText().trim().isEmpty()) {
                     guest.setBirthDate(new SimpleDateFormat("dd/MM/yyyy").parse(txtDob.getText().trim()));
                 }
+                guest.setPhone(txtPhone.getText().trim());
+                guest.setEmail(txtEmail.getText().trim());
+                guest.setHomeTown(txtHometown.getText().trim());
+                guest.setNationality(txtNationality.getText().trim());
 
                 Invoice invoice = new Invoice();
                 invoice.setRentalType(cbRentalType.getSelectedItem().toString());
@@ -213,7 +211,23 @@ public class RoomDetailDialog extends JDialog {
         Invoice activeInv = invoiceDAO.findActiveInvoiceByRoom(room.getRoomId());
         Guest activeGuest = null;
         if (activeInv != null) {
-            activeGuest = guestDAO.findByCccd(activeInv.getGuestCccd());
+            // Ép đọc trực tiếp từ DB để đảm bảo qua mặt mọi rủi ro
+            try (Connection conn = DBConnection.getConnection();
+                 PreparedStatement ps = conn.prepareStatement("SELECT * FROM guests WHERE cccd = ?")) {
+                ps.setString(1, activeInv.getGuestCccd());
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    activeGuest = new Guest();
+                    activeGuest.setCccd(rs.getString("cccd"));
+                    activeGuest.setName(rs.getString("name"));
+                    activeGuest.setPhone(rs.getString("phone"));
+                    activeGuest.setEmail(rs.getString("email"));
+                    activeGuest.setGender(rs.getString("gender"));
+                    activeGuest.setBirthDate(rs.getDate("birth_date"));
+                    activeGuest.setHomeTown(rs.getString("home_town"));
+                    activeGuest.setNationality(rs.getString("nationality"));
+                }
+            } catch (Exception e) { e.printStackTrace(); }
         }
 
         tabbedPane.addTab("👤 Khách hàng", createGuestUpdateForm(activeGuest));
@@ -226,20 +240,35 @@ public class RoomDetailDialog extends JDialog {
     }
 
     private JPanel createGuestUpdateForm(Guest guest) {
-        JPanel form = new JPanel(new GridLayout(0, 2, 10, 15));
-        form.setBorder(new EmptyBorder(20, 20, 20, 20));
+        JPanel form = new JPanel(new GridLayout(0, 2, 10, 10));
+        form.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        JTextField txtName = new JTextField(guest != null ? guest.getName() : "");
         JTextField txtCccd = new JTextField(guest != null ? guest.getCccd() : ""); txtCccd.setEditable(false);
+        JTextField txtName = new JTextField(guest != null ? guest.getName() : "");
+        JComboBox<String> cbGender = new JComboBox<>(new String[]{"Nam", "Nữ", "Khác"});
+        if (guest != null && guest.getGender() != null) cbGender.setSelectedItem(guest.getGender());
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String dobStr = (guest != null && guest.getBirthDate() != null) ? sdf.format(guest.getBirthDate()) : "";
+        JTextField txtDob = new JTextField(dobStr); txtDob.setToolTipText("dd/MM/yyyy");
+        
         JTextField txtPhone = new JTextField(guest != null ? guest.getPhone() : "");
         JTextField txtEmail = new JTextField(guest != null ? guest.getEmail() : "");
         JTextField txtHometown = new JTextField(guest != null ? guest.getHomeTown() : "");
+        JTextField txtNationality = new JTextField(guest != null && guest.getNationality() != null ? guest.getNationality() : "Việt Nam");
 
+        // Gắn vào UI theo thứ tự cực kỳ chuẩn
         form.add(new JLabel("CCCD/Passport:")); form.add(txtCccd);
-        form.add(new JLabel("Họ và tên:")); form.add(txtName);
+        form.add(new JLabel("Họ và tên (*):")); form.add(txtName);
+        form.add(new JLabel("Giới tính:")); form.add(cbGender);
+        form.add(new JLabel("Ngày sinh (dd/MM/yyyy):")); form.add(txtDob);
         form.add(new JLabel("Số điện thoại:")); form.add(txtPhone);
         form.add(new JLabel("Email:")); form.add(txtEmail);
         form.add(new JLabel("Quê quán:")); form.add(txtHometown);
+        form.add(new JLabel("Quốc tịch:")); form.add(txtNationality);
+
+        JScrollPane scrollPane = new JScrollPane(form);
+        scrollPane.setBorder(null);
 
         JButton btnUpdate = new JButton("Cập nhật thông tin");
         btnUpdate.setBackground(new Color(255, 204, 128)); 
@@ -248,18 +277,45 @@ public class RoomDetailDialog extends JDialog {
 
         btnUpdate.addActionListener(e -> {
             if(guest == null) return;
-            guest.setName(txtName.getText().trim());
-            guest.setPhone(txtPhone.getText().trim());
-            guest.setEmail(txtEmail.getText().trim());
-            guest.setHomeTown(txtHometown.getText().trim());
-            
-            if(stayService.updateStayInformation(room.getRoomId(), guest)) {
-                JOptionPane.showMessageDialog(this, "Đã cập nhật thông tin khách!");
+            try {
+                String cccd = txtCccd.getText().trim();
+                String name = txtName.getText().trim();
+                String gender = cbGender.getSelectedItem().toString();
+                String phone = txtPhone.getText().trim();
+                String email = txtEmail.getText().trim();
+                String hometown = txtHometown.getText().trim();
+                String nationality = txtNationality.getText().trim();
+                
+                java.sql.Date sqlDob = null;
+                if (!txtDob.getText().trim().isEmpty()) {
+                    java.util.Date parsedDate = sdf.parse(txtDob.getText().trim());
+                    sqlDob = new java.sql.Date(parsedDate.getTime());
+                }
+
+                try (Connection conn = DBConnection.getConnection();
+                     PreparedStatement ps = conn.prepareStatement("UPDATE guests SET name=?, phone=?, email=?, gender=?, birth_date=?, home_town=?, nationality=? WHERE cccd=?")) {
+                    
+                    ps.setString(1, name);
+                    ps.setString(2, phone);
+                    ps.setString(3, email);
+                    ps.setString(4, gender);
+                    if (sqlDob != null) ps.setDate(5, sqlDob); else ps.setNull(5, java.sql.Types.DATE);
+                    ps.setString(6, hometown);
+                    ps.setString(7, nationality);
+                    ps.setString(8, cccd);
+                    
+                    ps.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Đã cập nhật chuẩn xác thông tin khách đang lưu trú!");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Lỗi cập nhật Database!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (ParseException ex) {
+                JOptionPane.showMessageDialog(this, "Ngày sinh sai định dạng (Chuẩn: dd/MM/yyyy)!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(form, BorderLayout.CENTER);
+        panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(btnUpdate, BorderLayout.SOUTH);
         return panel;
     }
@@ -307,7 +363,7 @@ public class RoomDetailDialog extends JDialog {
                 int qty = (int) spnQty.getValue();
                 
                 if (selectedSvc.getInventory() < qty) {
-                    JOptionPane.showMessageDialog(this, "Kho chỉ còn " + selectedSvc.getInventory() + " sản phẩm. Không đủ để thêm!", "Hết hàng", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Kho chỉ còn " + selectedSvc.getInventory() + " sản phẩm!", "Hết hàng", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 
@@ -369,7 +425,6 @@ public class RoomDetailDialog extends JDialog {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // ================== CẬP NHẬT GIAO DIỆN CHECK-OUT ==================
     private JPanel createCheckOutPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         
@@ -381,7 +436,6 @@ public class RoomDetailDialog extends JDialog {
         paymentPanel.setBackground(Color.WHITE);
         paymentPanel.add(new JLabel("Hình thức chốt:"));
         
-        // Bổ sung ô cập nhật phương thức thanh toán ngay lúc Check-out
         JComboBox<String> cbFinalPayment = new JComboBox<>(new String[]{"Tiền mặt", "Chuyển khoản", "Thẻ tín dụng", "Nợ"});
         Invoice activeInv = invoiceDAO.findActiveInvoiceByRoom(room.getRoomId());
         if (activeInv != null && activeInv.getPaymentMethod() != null) {
@@ -403,7 +457,6 @@ public class RoomDetailDialog extends JDialog {
         btnCheckOut.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(this, "Xác nhận Check-out phòng " + room.getRoomId() + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                // Cập nhật phương thức thanh toán mới (VD: Báo ghi nợ) vào Database trước khi chốt
                 if (activeInv != null) {
                     try (Connection conn = DBConnection.getConnection();
                          PreparedStatement ps = conn.prepareStatement("UPDATE invoices SET payment_method = ? WHERE invoice_id = ?")) {

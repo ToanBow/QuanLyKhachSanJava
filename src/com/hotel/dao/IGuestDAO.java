@@ -15,4 +15,8 @@ public interface IGuestDAO {
 
     // Truy vấn lịch sử lưu trú của một khách hàng
     List<Guest> getAllCustomers();
+
+    boolean update(Guest guest);
+
+    List<Guest> findAll();
 }

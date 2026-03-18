@@ -234,9 +234,9 @@ public class PaymentServiceImpl implements IPaymentService {
             document.add(sumTable);
 
             // 6. MÃ QR CODE THANH TOÁN (Lấy thông tin từ CSDL)
-            String bankId = "MB";
-            String accNo = "0812789637"; 
-            String accName = "HOANG THI THU HUE";
+            String bankId = "VCB";
+            String accNo = "1045181602"; 
+            String accName = "DANG THE TOAN";
             
             try (Connection conn = DBConnection.getConnection();
                  PreparedStatement ps = conn.prepareStatement("SELECT setting_key, setting_value FROM system_settings WHERE setting_key IN ('BANK_ID', 'BANK_ACCOUNT', 'BANK_ACCOUNT_NAME')")) {
