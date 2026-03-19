@@ -46,7 +46,7 @@ CREATE TABLE services (
 
 -- 5. Bảng Hóa đơn
 CREATE TABLE invoices (
-    invoice_id VARCHAR(20) PRIMARY KEY,
+    invoice_id VARCHAR(50) PRIMARY KEY,    
     room_id VARCHAR(10),
     guest_cccd VARCHAR(20),
     check_in_time DATETIME,
@@ -56,10 +56,10 @@ CREATE TABLE invoices (
     early_surcharge DOUBLE DEFAULT 0,
     late_surcharge DOUBLE DEFAULT 0,
     discount DOUBLE DEFAULT 0,
-    payment_method ENUM('Tiền mặt', 'Tín dụng', 'Nợ'),
+    payment_method ENUM('Tiền mặt', 'Chuyển khoản', 'Thẻ tín dụng', 'Nợ'),
     total_amount DOUBLE,
-    staff_id VARCHAR(100), -- Đã khôi phục để phục vụ báo cáo ca
-    payment_date DATETIME, -- Đã khôi phục để phục vụ thống kê doanh thu
+    staff_id VARCHAR(100), 
+    payment_date DATETIME, 
     FOREIGN KEY (staff_id) REFERENCES users(email),
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (guest_cccd) REFERENCES guests(cccd)
@@ -68,7 +68,7 @@ CREATE TABLE invoices (
 -- 6. Bảng Chi tiết sử dụng dịch vụ
 CREATE TABLE service_usage (
     usage_id INT AUTO_INCREMENT PRIMARY KEY,
-    invoice_id VARCHAR(20),
+    invoice_id VARCHAR(50),           
     service_id VARCHAR(10),
     quantity INT,
     price_at_time DOUBLE,
@@ -76,7 +76,7 @@ CREATE TABLE service_usage (
     FOREIGN KEY (service_id) REFERENCES services(service_id)
 );
 
--- 7. Bảng Cấu hình hệ thống (Mới)
+-- 7. Bảng Cấu hình hệ thống 
 CREATE TABLE system_settings (
     setting_key VARCHAR(100) PRIMARY KEY, 
     setting_value TEXT NOT NULL            
