@@ -57,7 +57,7 @@ public class DashboardPanel extends JPanel {
 
         panel.add(createCards(), BorderLayout.NORTH);
         
-        // ĐÃ MỞ KHÓA: Thêm khu vực Biểu đồ Doanh thu vào giữa màn hình
+        //Thêm khu vực Biểu đồ Doanh thu vào giữa màn hình
         panel.add(createChartSection(), BorderLayout.CENTER); 
         
         return panel;
@@ -122,7 +122,6 @@ public class DashboardPanel extends JPanel {
         RevenueChartPanel chartPanel = new RevenueChartPanel(revData, labels);
         chartContainer.add(chartPanel, BorderLayout.CENTER);
 
-        // Bọc vào một Panel trắng có bóng/bo góc để nhìn đẹp hơn
         JPanel cardWrapper = new JPanel(new BorderLayout());
         cardWrapper.setBackground(Color.WHITE);
         cardWrapper.setBorder(BorderFactory.createCompoundBorder(

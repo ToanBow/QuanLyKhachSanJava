@@ -38,7 +38,7 @@ public class RoomMapPanel extends JPanel {
         JLabel title = new JLabel("Sơ đồ phòng");
         title.setFont(new Font("Segoe UI", Font.BOLD, 22));
 
-        // ---------------- THÊM NÚT LÀM MỚI VÀ BỘ LỌC ----------------
+        // THÊM NÚT LÀM MỚI VÀ BỘ LỌC
         JPanel rightControls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         rightControls.setOpaque(false);
 
@@ -61,7 +61,6 @@ public class RoomMapPanel extends JPanel {
         header.add(title, BorderLayout.WEST);
         header.add(rightControls, BorderLayout.EAST);
         add(header, BorderLayout.NORTH);
-        // -------------------------------------------------------------
 
         floorsPanel = new JPanel();
         floorsPanel.setLayout(new BoxLayout(floorsPanel, BoxLayout.Y_AXIS));
@@ -155,7 +154,6 @@ public class RoomMapPanel extends JPanel {
             case "Sẵn sàng": return RoomStatus.AVAILABLE;
             case "Có khách": return RoomStatus.OCCUPIED;
             case "Chưa dọn": return RoomStatus.CLEANING;
-            case "Đang sửa chữa": return RoomStatus.MAINTENANCE;
             default: return RoomStatus.AVAILABLE;
         }
     }

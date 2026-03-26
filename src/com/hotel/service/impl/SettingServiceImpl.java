@@ -39,7 +39,7 @@ public class SettingServiceImpl implements ISettingService {
 
     @Override
     public void setupHardwareConnections(String smtpServer, String printerAddress) {
-        // TODO: Cấu hình SMTP gửi mail và kết nối máy in hóa đơn, khóa từ [cite: 36]
+        // TODO: Cấu hình SMTP gửi mail và kết nối máy in hóa đơn
         System.out.println("CAU HINH PHAN CUNG");
         System.out.println("May chu SMTP: " + smtpServer);
         System.out.println("Dia chi may in: " + printerAddress);

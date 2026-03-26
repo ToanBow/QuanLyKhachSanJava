@@ -10,8 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CustomerServiceImpl implements ICustomerService {
 
@@ -32,7 +30,7 @@ public class CustomerServiceImpl implements ICustomerService {
                     double totalSpent = rs.getDouble(1);
                     String newRank = "Bạc"; // Hạng mặc định
                     
-                    // Phân ranh giới phân hạng (Ngưỡng tham khảo)
+                    // Phân ranh giới phân hạng
                     if (totalSpent >= 50000000) { 
                         newRank = "Kim cương"; // Chi tiêu trên 50 triệu
                     } else if (totalSpent >= 20000000) { 
@@ -52,7 +50,6 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     public boolean isBlacklisted(String cccd) {
         // Giả định kiến trúc mở rộng sẽ có bảng `blacklists(cccd, reason, date)` 
-        // Hoặc có thể thêm cột `is_blacklisted` (BOOLEAN) trực tiếp vào bảng `guests`
         String sql = "SELECT 1 FROM blacklists WHERE cccd = ?";
         
         try (Connection conn = DBConnection.getConnection();
@@ -63,8 +60,7 @@ public class CustomerServiceImpl implements ICustomerService {
                 return rs.next(); // Trả về true nếu CCCD tồn tại trong danh sách đen
             }
         } catch (SQLException e) {
-            // Fallback an toàn: Trả về false nếu bảng chưa được khởi tạo để không làm sập luồng Check-in
-            System.err.println("Cảnh báo tra cứu Blacklist: " + e.getMessage());
+            System.err.println("Canh bao tra cuu Blacklist " + e.getMessage());
             return false;
         }
     }
@@ -73,9 +69,9 @@ public class CustomerServiceImpl implements ICustomerService {
     public Guest getCustomerProfile(String cccd) {
         Guest guest = guestDAO.findByCccd(cccd);
         if (guest != null) {
-            System.out.println("Hồ sơ định danh hợp lệ. Khách hàng: " + guest.getName());
+            System.out.println("Ho so dinh danh khong lop le! Khach hang: " + guest.getName());
         } else {
-            System.out.println("Hồ sơ không tồn tại với CCCD: " + cccd);
+            System.out.println("Ho so khong ton tai voi cccd:  " + cccd);
         }
         return guest;
     }

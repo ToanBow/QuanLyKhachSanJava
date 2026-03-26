@@ -58,7 +58,7 @@ public class PdfReportUtil {
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
             document.add(new Paragraph("Thoi gian lap bao cao: " + dtf.format(LocalDateTime.now())).setItalic().setTextAlignment(TextAlignment.RIGHT));
-            document.add(new Paragraph("Nguoi xuat: Admin he thong").setItalic().setTextAlignment(TextAlignment.RIGHT).setMarginBottom(20));
+            document.add(new Paragraph("Nguoi xuat: Admin dep trai, xinh gai").setItalic().setTextAlignment(TextAlignment.RIGHT).setMarginBottom(20));
 
             // 4. Bảng số liệu chi tiết
             Table table = new Table(UnitValue.createPercentArray(new float[]{50, 50}));

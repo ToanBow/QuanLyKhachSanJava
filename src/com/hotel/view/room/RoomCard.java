@@ -49,7 +49,6 @@ public class RoomCard extends JPanel {
         add(content,BorderLayout.CENTER);
 
         // Chỉ giữ lại hiệu ứng Hover (Đổi màu khi di chuột)
-        // ĐÃ XÓA MOUSE_CLICKED VÌ LOGIC NÀY ĐÃ ĐƯỢC XỬ LÝ BÊN ROOM MAPPANEL
         addMouseListener(new MouseAdapter(){
             public void mouseEntered(MouseEvent e){
                 hover=true;
@@ -70,8 +69,6 @@ public class RoomCard extends JPanel {
                 return new Color(255,235,238); // Đỏ nhạt
             case CLEANING:
                 return new Color(255,248,225); // Vàng nhạt
-            case MAINTENANCE:
-                return new Color(236,239,241); // Xám nhạt
         }
         return Color.WHITE;
     }
@@ -84,8 +81,6 @@ public class RoomCard extends JPanel {
                 return new Color(211,47,47); // Đỏ đậm
             case CLEANING:
                 return new Color(255,152,0); // Cam
-            case MAINTENANCE:
-                return new Color(96,125,139); // Xám xanh
         }
         return Color.GRAY;
     }

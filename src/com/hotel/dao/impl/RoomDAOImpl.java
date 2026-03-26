@@ -94,7 +94,7 @@ public class RoomDAOImpl implements IRoomDAO {
         return null;
     }
 
-    // Cập nhật trạng thái (Sẵn sàng, Có khách, Đang dọn, Đang sửa chữa)
+    // Cập nhật trạng thái (Sẵn sàng, Có khách, Đang dọn)
     @Override
     public boolean updateStatus(String roomId, String status) {
         String sql = "UPDATE rooms SET status=? WHERE room_id=?";

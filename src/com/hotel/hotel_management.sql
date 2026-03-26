@@ -17,7 +17,7 @@ CREATE TABLE rooms (
     beds INT,
     daily_price DOUBLE,
     hourly_price DOUBLE,
-    status ENUM('Sẵn sàng', 'Có khách', 'Chưa dọn', 'Đang sửa chữa') DEFAULT 'Sẵn sàng'
+    status ENUM('Sẵn sàng', 'Có khách', 'Chưa dọn') DEFAULT 'Sẵn sàng'
 );
 
 -- 3. Bảng Khách hàng

@@ -36,7 +36,7 @@ public class LoginFrame extends JFrame {
         setResizable(false);
         setLayout(new BorderLayout());
 
-        // --- PHẦN BÊN TRÁI (Banner & Logo) ---
+        //PHẦN BÊN TRÁI
         JPanel leftPanel = new JPanel(new GridBagLayout());
         leftPanel.setBackground(PRIMARY_COLOR);
         leftPanel.setPreferredSize(new Dimension(420, 550));
@@ -48,7 +48,7 @@ public class LoginFrame extends JFrame {
 
         add(leftPanel, BorderLayout.WEST);
 
-        // --- PHẦN BÊN PHẢI (Form Đăng nhập) ---
+        //PHẦN BÊN PHẢI
         JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -94,7 +94,7 @@ public class LoginFrame extends JFrame {
         gbc.insets = new Insets(0, 0, 30, 0);
         rightPanel.add(showPassCheck, gbc);
 
-        // Nút Đăng nhập được nâng cấp giao diện (Bo tròn, Hover sáng lên)
+        // Nút Đăng nhập được nâng cấp giao diện 
         JButton loginBtn = createStyledButton("ĐĂNG NHẬP", ACCENT_COLOR);
         gbc.insets = new Insets(10, 0, 15, 0);
         rightPanel.add(loginBtn, gbc);
@@ -132,7 +132,7 @@ public class LoginFrame extends JFrame {
         add(rightPanel, BorderLayout.CENTER);
     }
 
-    // Làm đẹp ô nhập liệu (Text Field)
+    // Làm đẹp ô nhập liệu 
     private JTextField createTextField() {
         JTextField field = new JTextField();
         field.setPreferredSize(new Dimension(340, 45));
@@ -144,7 +144,7 @@ public class LoginFrame extends JFrame {
         return field;
     }
 
-    // Làm đẹp ô mật khẩu (Password Field)
+    // Làm đẹp ô mật khẩu 
     private JPasswordField createPasswordField() {
         JPasswordField field = new JPasswordField();
         field.setPreferredSize(new Dimension(340, 45));
@@ -156,7 +156,7 @@ public class LoginFrame extends JFrame {
         return field;
     }
 
-    // Phương thức tạo Nút bấm Bo tròn góc (Rounded Button)
+    // Phương thức tạo Nút bấm
     private JButton createStyledButton(String text, Color bgColor) {
         JButton button = new JButton(text) {
             @Override
@@ -180,7 +180,7 @@ public class LoginFrame extends JFrame {
         button.setContentAreaFilled(false); // Quan trọng để hiển thị màu vẽ tùy chỉnh
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Thêm hiệu ứng Đổi màu khi đưa chuột vào (Hover Effect)
+        // Thêm hiệu ứng Đổi màu
         button.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) { button.setBackground(bgColor.brighter()); }
             public void mouseExited(MouseEvent e) { button.setBackground(bgColor); }

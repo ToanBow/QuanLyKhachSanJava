@@ -33,7 +33,7 @@ public class InvoicePanel extends JPanel {
         setBackground(new Color(245, 247, 250));
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // --- Header ---
+        //Header
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
         JLabel title = new JLabel("Hóa đơn & Quản lý Công nợ");
@@ -43,7 +43,7 @@ public class InvoicePanel extends JPanel {
         header.add(title, BorderLayout.WEST);
         add(header, BorderLayout.NORTH);
 
-        // --- Tích hợp TabbedPane ---
+        //Tích hợp TabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Segoe UI", Font.BOLD, 14));
         

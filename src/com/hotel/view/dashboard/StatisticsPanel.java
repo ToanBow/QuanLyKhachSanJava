@@ -143,7 +143,6 @@ public class StatisticsPanel extends JPanel {
             }
             
             // 3. XỬ LÝ LOGIC TÍNH TOÁN
-            // Kiểm tra xem total_amount lưu trong DB có chứa tiền dịch vụ hay chưa
             double testRoomRev = totalInvoice - surcharge - serviceRev;
             
             if (testRoomRev < 0) {

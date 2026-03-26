@@ -12,7 +12,7 @@ public class DailyReportScheduler {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         IReportService reportService = new ReportServiceImpl();
 
-        // Chạy tác vụ đếm ngược, ví dụ: lặp lại mỗi 24 giờ
+        // Chạy tác vụ đếm ngược, lặp lại mỗi 24 giờ
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 reportService.sendReportToEmail(managerEmail);

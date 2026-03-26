@@ -257,7 +257,6 @@ public class RoomDetailDialog extends JDialog {
         JTextField txtHometown = new JTextField(guest != null ? guest.getHomeTown() : "");
         JTextField txtNationality = new JTextField(guest != null && guest.getNationality() != null ? guest.getNationality() : "Việt Nam");
 
-        // Gắn vào UI theo thứ tự cực kỳ chuẩn
         form.add(new JLabel("CCCD/Passport:")); form.add(txtCccd);
         form.add(new JLabel("Họ và tên (*):")); form.add(txtName);
         form.add(new JLabel("Giới tính:")); form.add(cbGender);

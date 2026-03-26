@@ -9,19 +9,20 @@ public class AuthServiceImpl implements IAuthService {
     private IUserDAO userDAO = new UserDAOImpl();
     @Override
     public boolean register(User newUser, String confirmPassword) {
-        // TODO: Kiểm tra định dạng email và mật khẩu 8 ký tự (chữ + số + in hoa + đặc biệt)
+        // Kiểm tra định dạng email
         // TODO: Kiểm tra mật khẩu nhập lại có khớp không và email đã tồn tại chưa
         String emailRegex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         if (!newUser.getEmail().matches(emailRegex)) {
             System.out.println("Loi dinh dang Mail, vui long thu lai nhe!");
             return false;
         }
-        String passRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
+        String passRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$"; //mật khẩu 8 ký tự (chữ + số + in hoa + đặc biệt)
         if (!newUser.getPassword().matches(passRegex)) {
             System.out.println(
                     "Vui long nhap mat khau du 8 ky tu va bao gom chu hoa, chu thuong, chu so va ky tu dac biet!");
             return false;
         }
+        //Kiểm tra mật khẩu nhập lại có khớp không và email đã tồn tại chưa
         if (!newUser.getPassword().equals(confirmPassword)) {
             System.out.println("Vui long nhap dung mat khau da nhap!");
             return false;
@@ -36,7 +37,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public boolean login(String email, String password) {
-        // TODO: Xác thực thông tin đăng nhập và xử lý ẩn mật khẩu
+        //Xác thực thông tin đăng nhập và xử lý ẩn mật khẩu
         User user = userDAO.findByEmail(email);
         if (user != null && user.getPassword().equals(password)) {
             System.out.println("Dang nhap thanh cong voi quyen " + user.getRole());
@@ -49,13 +50,13 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public void logout(String email) {
-        // TODO: Xóa dữ liệu tạm (cache) và ghi nhật ký hoạt động
+        //Xoa dữ liệu tạm (cache) và ghi nhật ký hoạt động
         System.out.println("Nguoi dung " + email + " da dang xuat. Da ghi nhat ky hoat dong!");
     }
 
     @Override
     public void setRolePermission(String email, String role) {
-        // TODO: Thiết lập quyền cho Quản lý, Lễ tân, Kế toán, Buồng phòng
+        //Thiết lập quyền cho Quản lý, Lễ tân, Kế toán, Buồng phòng
         User user = userDAO.findByEmail(email);
         if (user != null) {
             user.setRole(role);

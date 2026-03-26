@@ -195,7 +195,7 @@ public class CustomerPanel extends JPanel {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        // FIX LỖI: Điền đầy đủ tất cả các trường dữ liệu khi Update
+        //Điền đầy đủ tất cả các trường dữ liệu khi Update
         if (existingGuest != null) {
             txtCccd.setText(existingGuest.getCccd());
             txtCccd.setEditable(false); 

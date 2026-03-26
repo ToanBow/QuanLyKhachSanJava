@@ -40,7 +40,6 @@ public class ServiceDAOImpl implements IServiceDAO {
                     Service s = new Service();
                     s.setServiceId(rs.getString("service_id"));
                     s.setName(rs.getString("name"));
-                    // SỬA LỖI: Bổ sung các trường còn thiếu
                     s.setCategory(rs.getString("category"));
                     s.setInventory(rs.getInt("inventory"));
                     s.setPrice(rs.getDouble("price"));

@@ -13,7 +13,6 @@ public class DBConnection {
     public static Connection getConnection() {
         Connection conn = null;
         try {
-            // Đảm bảo đã thêm thư viện mysql-connector-j vào dự án
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException | SQLException e) {

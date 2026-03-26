@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 public class InventoryServiceImpl implements IInventoryService {
     @Override
     public void updateStock(String serviceId, int quantityChange) {
-        // TODO: Theo dõi số lượng tồn kho và tự động trừ kho khi sử dụng [cite: 22, 23]
+        // TODO: Theo dõi số lượng tồn kho và tự động trừ kho khi sử dụng
         //mo ket noi qua DNConnection
         //tu dong tru ton kho khi su dung
 
@@ -31,12 +31,11 @@ public class InventoryServiceImpl implements IInventoryService {
 
     @Override
     public void configureService(Service service) {
-        // TODO: Thiết lập giá bán, đơn vị tính và thuế suất VAT [cite: 24]
+        // TODO: Thiết lập giá bán, đơn vị tính và thuế suất VAT 
         System.out.println("--- CẤU HÌNH DỊCH VỤ ---");
         System.out.println("Tên dịch vụ: "+ service.getName());
         System.out.println("Đơn giá: "+ service.getPrice());
         System.out.println("Đơn vị tính: "+ service.getUnit());
         System.out.println("Thuế suất (vatRate): "+ service.getVatRate()); 
-        System.out.println("------------------------");
     } 
 }
