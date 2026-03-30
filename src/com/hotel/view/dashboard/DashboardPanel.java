@@ -11,9 +11,6 @@ import java.time.LocalDate;
 public class DashboardPanel extends JPanel {
 
     private final Color BG_COLOR = new Color(245, 247, 250);
-    private final Color CARD_COLOR = Color.WHITE;
-    private final Color ACCENT_COLOR = new Color(13, 71, 161);
-
     private ReportServiceImpl reportService;
     private RoomServiceImpl roomService; // Bổ sung RoomService để đếm số phòng
 

@@ -50,7 +50,7 @@ public class RoomMapPanel extends JPanel {
         btnReload.addActionListener(e -> loadRoomsData());
 
         // Cập nhật bộ lọc theo đúng các trạng thái trong CSDL
-        String[] filters = {"Tất cả", "Sẵn sàng", "Có khách", "Chưa dọn", "Đang sửa chữa"};
+        String[] filters = {"Tất cả", "Sẵn sàng", "Có khách", "Chưa dọn"};
         filterBox = new JComboBox<>(filters);
         filterBox.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         filterBox.addActionListener(e -> applyFilter());

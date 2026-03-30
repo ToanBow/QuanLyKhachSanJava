@@ -4,17 +4,17 @@ import com.hotel.model.Invoice;
 
 public interface IPaymentService {
     /**
-   Quản lý phương thức: QR Code động, Thẻ tín dụng, Ví điện tử. [cite: 30]
+   Quản lý phương thức: QR Code động, Thẻ tín dụng, Ví điện tử. 
      */
     void processPayment(String method, double amount);
 
     /**
-    Quản lý công nợ khách đoàn hoặc các đại lý lữ hành (OTA). [cite: 31]
+    Quản lý công nợ khách đoàn hoặc các đại lý lữ hành (OTA). 
      */
     void manageAgencyDebt(String agencyId, double amount);
 
     /**
-    Đối soát luồng tiền theo ca làm việc (Shift report) của nhân viên lễ tân. [cite: 32]
+    Đối soát luồng tiền theo ca làm việc (Shift report) của nhân viên lễ tân. 
      */
     void generateShiftReport(String employeeId);
 
