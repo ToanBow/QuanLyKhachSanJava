@@ -264,9 +264,9 @@ public class SettingPanel extends JPanel {
         txtCheckInTime.setText(configs.getOrDefault("CHECKIN_TIME", "14:00")); txtCheckOutTime.setText(configs.getOrDefault("CHECKOUT_TIME", "12:00"));
         txtCurrency.setText(configs.getOrDefault("CURRENCY_FORMAT", "VND"));
         
-        txtBankId.setText(configs.getOrDefault("BANK_ID", "MB"));
-        txtBankAccount.setText(configs.getOrDefault("BANK_ACCOUNT", "0812789637"));
-        txtBankName.setText(configs.getOrDefault("BANK_ACCOUNT_NAME", "HOANG THI THU HUE"));
+        txtBankId.setText(configs.getOrDefault("BANK_ID", "VCB"));
+        txtBankAccount.setText(configs.getOrDefault("BANK_ACCOUNT", "1045181602"));
+        txtBankName.setText(configs.getOrDefault("BANK_ACCOUNT_NAME", "DANG THE TOAN"));
         
         txtSmtpEmail.setText(EnvConfig.getEmailUser() != null ? EnvConfig.getEmailUser() : ""); txtSmtpPass.setText(EnvConfig.getEmailPass() != null ? EnvConfig.getEmailPass() : "");
 
@@ -298,7 +298,6 @@ public class SettingPanel extends JPanel {
         } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Lỗi lưu cấu hình: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE); }
     }
 
-    // ================== CÁC TAB CŨ (GIỮ NGUYÊN LOGIC) ==================
     private JPanel createRoomTab() {
         JPanel panel = new JPanel(new BorderLayout()); panel.setBackground(Color.WHITE);
         roomModel = new DefaultTableModel(new String[]{"Mã Phòng", "Tầng", "Loại Phòng", "Số giường", "Giá Ngày", "Giá Giờ", "Trạng thái"}, 0) { @Override public boolean isCellEditable(int row, int column) { return false; } };
