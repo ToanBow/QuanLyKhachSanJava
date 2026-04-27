@@ -1,126 +1,125 @@
-Hotel Management System (HMS)
-Một giải pháp quản lý khách sạn toàn diện được xây dựng trên nền tảng Java Core, tối ưu hóa quy trình vận hành và quản lý tài chính.
+# Hotel Management System (HMS)
 
-📝 Giới thiệu
-Hotel Management System (HMS) là hệ thống quản lý khách sạn cấp doanh nghiệp, được thiết kế để đơn giản hóa các hoạt động phức tạp từ tiếp tân, buồng phòng đến kế toán và quản lý cấp cao. Dự án tập trung vào tính chính xác của dữ liệu, phân quyền chặt chẽ và khả năng mở rộng linh hoạt.
+A robust, enterprise-grade desktop application designed to streamline hotel operations, from real-time room management to automated financial reporting. Built with Java Swing and a modular layered architecture, this system ensures high performance, maintainability, and data integrity.
 
-Hệ thống cung cấp cái nhìn toàn diện về tình thái lưu trú, quản lý kho dịch vụ tự động và hệ thống báo cáo doanh thu chi tiết, giúp tối ưu hóa hiệu suất vận hành khách sạn.
+## 1. Introduction
+The **Hotel Management System** is a comprehensive solution for hospitality businesses seeking to digitize their workflows. It provides a centralized platform for managing guest check-ins, room availability, service billing, and revenue analytics. By leveraging a service-oriented approach, the application separates business logic from data access, providing a scalable foundation for future expansions.
 
-✨ Tính năng chính
-🔐 Quản lý người dùng & Phân quyền (RBAC)
-Xác thực bảo mật: Đăng ký và đăng nhập với kiểm tra định dạng email và độ phức tạp mật khẩu.
+## 2. Key Features
+- **Interactive Room Map:** Real-time visualization of room statuses (Available, Occupied, Cleaning, Maintenance).
+- **Guest Management:** Centralized database for guest profiles and stay history.
+- **Automated Invoicing:** Generate professional PDF invoices using iText integration.
+- **Analytics Dashboard:** Visual revenue charts and statistics for data-driven decision-making.
+- **Audit Logging:** Comprehensive tracking of system activities for security and accountability.
+- **Notification System:** Automated email reports and alerts via Jakarta Mail.
+- **Secure Authentication:** Role-based access control (RBAC) to protect sensitive administrative data.
 
-Phân quyền chi tiết: Hệ thống phân quyền dựa trên vai trò (Role-Based Access Control) cho Quản lý, Lễ tân, Kế toán và Buồng phòng.
+## 3. Overall Architecture
 
-Nhật ký hoạt động: Ghi lại lịch sử hệ thống (Audit Log) khi người dùng đăng xuất.
+The project follows a **Multi-Tier Layered Architecture** to ensure strict separation of concerns.
 
-🏨 Quản lý lưu trú & Phòng
-Sơ đồ phòng động: Hiển thị danh sách phòng dưới dạng lưới với màu sắc phân biệt trạng thái: Sẵn sàng, Có khách, Chưa dọn, Đang sửa chữa.
-
-Quy trình Check-in/Check-out: Tự động lấy dữ liệu thời gian hệ thống, nhập thông tin định danh khách hàng và hình thức thuê (theo giờ/ngày).
-
-Chính sách giá linh hoạt: Thiết lập giá theo mùa, theo loại phòng hoặc theo khung giờ đặc biệt.
-
-🛍️ Dịch vụ & Kho lưu trữ
-Quản lý dịch vụ: Theo dõi việc sử dụng dịch vụ (Mini bar, Giặt là, Spa...) và tự động trừ tồn kho khi phát sinh giao dịch.
-
-Định giá thông minh: Cấu hình giá bán, đơn vị tính và thuế suất VAT riêng biệt cho từng loại dịch vụ.
-
-📊 Tài chính & Báo cáo
-Hóa đơn tự động: Tính toán tổng tiền dựa trên giá phòng, phụ thu sớm/muộn, chi phí dịch vụ và các chương trình giảm giá.
-
-Báo cáo thông minh: Thống kê doanh thu thuần, tỷ lệ lấp đầy phòng và gửi báo cáo trực tiếp qua Email cho nhà quản lý.
-
-🏗️ Kiến trúc tổng quan
-Dự án được xây dựng theo kiến trúc phân lớp (Layered Architecture) nhằm tách biệt rõ ràng giữa logic xử lý dữ liệu và logic nghiệp vụ.
-
-Đoạn mã
+```mermaid
 graph TD
-    UI[Giao diện người dùng] --> Service[Service Layer - Nghiệp vụ]
-    Service --> DAO[DAO Layer - Truy xuất dữ liệu]
-    DAO --> DB[(MySQL Database)]
-    Service --> Model[Models - Đối tượng thực thể]
-    DAO --> Model
-Model Layer: Chứa các POJO (Plain Old Java Objects) như User, Room, Guest, Invoice đại diện cho các thực thể trong hệ thống.
+    subgraph Presentation_Layer
+        UI[Swing View Components]
+        Dashboard[Statistics & Charts]
+    end
 
-DAO Layer (Data Access Object): Các Interface định nghĩa phương thức tương tác với CSDL.
+    subgraph Service_Layer
+        BS[Business Logic Services]
+        Auth[Authentication/Security]
+        Report[PDF/Email Engines]
+    end
 
-Service Layer: Chứa Business Logic, xử lý các ràng buộc nghiệp vụ phức tạp trước khi gọi DAO.
+    subgraph Data_Access_Layer
+        DAO[Data Access Objects]
+        DB_Conn[JDBC Connection Pool]
+    end
 
-Util Layer: Chứa cấu hình kết nối cơ sở dữ liệu JDBC.
+    DB[(MySQL Database)]
 
-🛠️ Cài đặt
-Yêu cầu hệ thống
-Java Development Kit (JDK): Phiên bản 17 trở lên.
+    UI --> BS
+    BS --> DAO
+    DAO --> DB_Conn
+    DB_Conn --> DB
+```
 
-Database: MySQL Server 8.0+.
+- **Models:** Plain Old Java Objects (POJOs) representing database entities.
+- **DAOs:** Abstract data persistence logic from business logic.
+- **Services:** Coordinate complex operations (e.g., booking logic, financial calculations).
+- **Util:** Cross-cutting concerns like Database Connectivity, PDF generation, and Session Management.
 
-IDE: IntelliJ IDEA, Eclipse hoặc NetBeans.
+## 4. Installation
 
-Các bước thiết lập
-Clone dự án:
+### Prerequisites
+- **Java Development Kit (JDK):** Version 17 or higher.
+- **MySQL Server:** Version 8.0 or higher.
+- **IDE:** IntelliJ IDEA or Eclipse (recommended).
 
-Bash
-git clone https://github.com/your-repo/hotel-management.git
-Thiết lập Cơ sở dữ liệu:
+### Steps
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/user/quanlykhachsanjava.git
+   cd quanlykhachsanjava
+   ```
+2. **Database Setup:**
+   - Import the schema located at `src/com/hotel/hotel_management.sql` into your MySQL instance.
+3. **Library Configuration:**
+   - Ensure all `.jar` files in the `/lib` folder are added to your project's Build Path.
 
-Mở MySQL Workbench hoặc Command Line.
+## 5. Running the Project
+1. Configure the environment variables (see Section 6).
+2. Locate the main entry point: `src/com/hotel/view/LoginFrame.java`.
+3. Compile and run the class.
+4. Use the default administrative credentials provided by your system administrator to log in.
 
-Chạy file script JAVA/src/com/hotel/hotel_management.sql để tạo database và cấu trúc bảng.
+## 6. Env Configuration
+Create a `.env` file in the root directory to manage sensitive configurations. The system uses `dotenv-java` to load these properties securely.
 
-Cấu hình thư viện:
+```env
+# Database Configuration
+DB_URL=jdbc:mysql://localhost:3306/hotel_management
+DB_USER=root
+DB_PASSWORD=your_secure_password
 
-Đảm bảo file mysql-connector-j-9.6.0.jar đã được thêm vào Classpath của dự án.
+# Email Service Configuration
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USERNAME=admin@hotel.com
+EMAIL_PASSWORD=app_specific_password
+```
 
-⚙️ Env Configuration
-Thông tin kết nối cơ sở dữ liệu được cấu hình trong file DBConnection.java. Bạn cần thay đổi các tham số sau để phù hợp với môi trường local:
+## 7. Folder Structure
+```text
+├── lib/                   # External dependencies (.jar files)
+├── logs/                  # System and audit log files
+├── reports/               # Generated PDF reports and invoices
+├── src/
+│   └── com/hotel/
+│       ├── dao/           # Data Access Object interfaces
+│       │   └── impl/      # JDBC implementations
+│       ├── model/         # Entity classes (Guest, Room, Invoice)
+│       ├── service/       # Business logic interfaces
+│       │   └── impl/      # Service implementations
+│       ├── util/          # Database, Email, and PDF utilities
+│       ├── view/          # Swing UI components (Panels, Dialogs)
+│       └── test/          # Unit and connection tests
+└── .env                   # Environment configuration
+```
 
-Java
-// JAVA/src/com/hotel/util/DBConnection.java
-private static final String URL = "jdbc:mysql://localhost:3306/hotel_management";
-private static final String USER = "root"; // Tài khoản MySQL của bạn
-private static final String PASSWORD = "your_password"; // Mật khẩu MySQL của bạn
-🚀 Chạy project
-Để kiểm tra kết nối giữa ứng dụng Java và MySQL, bạn có thể khởi chạy lớp kiểm thử:
+## 8. Contribution Guidelines
+We welcome contributions to improve the HMS core.
+1. **Fork** the repository.
+2. Create a **Feature Branch** (`git checkout -b feature/AmazingFeature`).
+3. **Commit** your changes using descriptive messages.
+4. **Push** to the branch.
+5. Open a **Pull Request** for architectural review.
 
-Bash
-# Chạy file TestConnection để xác nhận cấu hình DB
-java com.hotel.test.TestConnection
-Nếu thành công, màn hình sẽ hiển thị: "Chúc mừng! Bạn đã kết nối Database thành công.".
+## 9. License
+Distributed under the **MIT License**. See `LICENSE` for more information.
 
-📂 Cấu trúc thư mục
-Plaintext
-com.hotel
-├── dao          # Interfaces định nghĩa truy vấn CSDL (Guest, Invoice, Room...)
-├── model        # Các lớp thực thể (User, Room, Guest, Service...)
-├── service      # Logic nghiệp vụ (Auth, Stay, Inventory, Report...)
-│   └── impl     # Lớp triển khai thực tế của các Service
-├── test         # Các lớp kiểm thử hệ thống
-├── util         # Tiện ích hệ thống (Kết nối DBConnection)
-└── lib          # Thư viện ngoài (MySQL Connector)
-🤝 Hướng dẫn đóng góp
-Chúng tôi luôn hoan nghênh các đóng góp để hoàn thiện hệ thống:
-
-Fork dự án.
-
-Tạo nhánh tính năng mới (git checkout -b feature/AmazingFeature).
-
-Commit các thay đổi (git commit -m 'Add some AmazingFeature').
-
-Push lên nhánh (git push origin feature/AmazingFeature).
-
-Mở một Pull Request.
-
-🛣️ Roadmap
-[ ] Xây dựng giao diện người dùng (GUI) bằng Java Swing/JavaFX.
-
-[ ] Tích hợp thanh toán qua QR Code động.
-
-[ ] Phát triển API REST để kết nối với ứng dụng di động.
-
-[ ] Hệ thống dự báo tỷ lệ lấp đầy phòng dựa trên AI.
-
-📄 Giấy phép
-Phân phối dưới Giấy phép MIT. Xem LICENSE để biết thêm thông tin.
-
-HMS Project - Professional Hospitality Management Solutions.
+## 10. Roadmap
+- [ ] **Cloud Migration:** Transition to a RESTful API with a Spring Boot backend.
+- [ ] **Mobile Integration:** Develop a companion app for staff housekeeping.
+- [ ] **AI Forecasting:** Implement occupancy prediction models.
+- [ ] **Multi-language Support:** Localization for international hotel chains.
