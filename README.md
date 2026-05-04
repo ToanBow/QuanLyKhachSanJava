@@ -59,8 +59,8 @@ graph TD
 ### Steps
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/user/quanlykhachsanjava.git
-   cd quanlykhachsanjava
+   git clone https://github.com/ToanBow/QuanLyKhachSanJava
+   cd QuanLyKhachSanJava
    ```
 2. **Database Setup:**
    - Import the schema located at `src/com/hotel/hotel_management.sql` into your MySQL instance.
